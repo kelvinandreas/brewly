@@ -5,16 +5,16 @@ import (
 	"net/http"
 	"time"
 
-	jwtpkg "github.com/your-handle/brewly/pkg/jwt"
-	"github.com/your-handle/brewly/pkg/response"
-	"github.com/your-handle/brewly/pkg/sse"
+	jwtpkg "github.com/kelvinandreas/brewly/pkg/jwt"
+	"github.com/kelvinandreas/brewly/pkg/response"
+	"github.com/kelvinandreas/brewly/pkg/sse"
 )
 
 // SSEHandler streams Server-Sent Events to connected clients.
 type SSEHandler struct {
-	kitchenBroker  *sse.Broker
-	songBroker     *sse.Broker
-	accessSecret   string
+	kitchenBroker *sse.Broker
+	songBroker    *sse.Broker
+	accessSecret  string
 }
 
 // NewSSEHandler constructs an SSEHandler.

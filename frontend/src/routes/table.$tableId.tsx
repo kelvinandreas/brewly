@@ -258,9 +258,7 @@ function CustomerMenuPage() {
                   >
                     <div>
                       <p className="text-xs text-gray-500">
-                        {order.items
-                          .map((i) => `${i.nameSnapshot} ×${i.quantity}`)
-                          .join(', ')}
+                        {order.items.map((i) => `${i.nameSnapshot} ×${i.quantity}`).join(', ')}
                       </p>
                       <p className="text-xs font-bold text-amber-600 mt-0.5">
                         {formatIDR(order.totalMinor)}
@@ -409,9 +407,7 @@ function SongsTab({ tableId }: { tableId: string }) {
         />
       </div>
 
-      {searchQuery.isLoading && (
-        <p className="text-center text-sm text-gray-400">Searching…</p>
-      )}
+      {searchQuery.isLoading && <p className="text-center text-sm text-gray-400">Searching…</p>}
 
       {searchQuery.data && searchQuery.data.length === 0 && debouncedQ.length >= 2 && (
         <p className="text-center text-sm text-gray-400">No results for "{debouncedQ}"</p>

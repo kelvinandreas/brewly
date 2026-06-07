@@ -11,8 +11,7 @@ export function useTables() {
 
   const listQuery = useQuery({
     queryKey: tableKeys.all,
-    queryFn: () =>
-      apiFetch<{ tables: Table[] }>('/api/tables').then((d) => d.tables),
+    queryFn: () => apiFetch<{ tables: Table[] }>('/api/tables').then((d) => d.tables),
   })
 
   const createMutation = useMutation({
@@ -34,8 +33,7 @@ export function useTables() {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) =>
-      apiFetch<void>(`/api/tables/${id}`, { method: 'DELETE' }),
+    mutationFn: (id: string) => apiFetch<void>(`/api/tables/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: tableKeys.all }),
   })
 

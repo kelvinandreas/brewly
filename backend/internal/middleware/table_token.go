@@ -6,9 +6,9 @@ import (
 	"strings"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
-	"github.com/your-handle/brewly/pkg/response"
-	"github.com/your-handle/brewly/pkg/tabletoken"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/pkg/response"
+	"github.com/kelvinandreas/brewly/pkg/tabletoken"
 )
 
 // RequireTableToken returns middleware that validates a customer table token and

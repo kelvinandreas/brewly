@@ -5,9 +5,9 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
-	"github.com/your-handle/brewly/pkg/qrcode"
-	"github.com/your-handle/brewly/pkg/tabletoken"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/pkg/qrcode"
+	"github.com/kelvinandreas/brewly/pkg/tabletoken"
 )
 
 // TableConfig holds secrets and URLs needed by TableUsecase.

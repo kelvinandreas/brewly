@@ -48,8 +48,7 @@ export function useSubmitSongRequest(tableId: string) {
         method: 'POST',
         body: JSON.stringify(data),
       }),
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ['customer-yt-search'] }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['customer-yt-search'] }),
     meta: { tableId },
   })
 }

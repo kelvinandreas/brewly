@@ -3,14 +3,14 @@
 ## Prerequisites
 
 - Docker 25+ and Docker Compose v2
-- Go 1.23+ (only if you want to run backend tests locally without Docker)
+- Go 1.25+ (only if you want to run backend tests locally without Docker)
 - Node 20 + pnpm 9 (only if you want to run the frontend dev server locally without Docker)
 - `make`
 
 ## Local setup
 
 ```bash
-git clone https://github.com/your-handle/brewly
+git clone https://github.com/kelvinandreas/brewly
 cd brewly
 cp .env.example .env
 # Edit .env — at minimum: DB_PASSWORD, JWT_SECRET, REFRESH_SECRET, TABLE_TOKEN_SECRET, YOUTUBE_API_KEY
@@ -27,22 +27,22 @@ Open `http://localhost:5173/login` → "Register owner" appears because the DB h
 
 ## Makefile targets
 
-| Target | What it does |
-|---|---|
-| `make dev` | `docker compose up` — dev stack |
-| `make dev-down` | `docker compose down` |
-| `make migrate` | Apply pending SQL migrations against the running DB |
-| `make migrate-new name=add_foo` | Scaffold `backend/migrations/NNN_add_foo.sql` |
-| `make test` | `go test ./...` + `pnpm --filter frontend test` |
-| `make test-backend` | backend tests only |
-| `make test-frontend` | frontend tests only |
-| `make lint` | `golangci-lint run` + `pnpm lint` + `pnpm format:check` |
-| `make fmt` | `gofmt -w` + `pnpm format` |
-| `make commit` | runs `scripts/commit.sh` — interactive conventional commit |
-| `make build-prod` | builds prod images via `docker-compose.prod.yml` |
-| `make logs` | tails docker compose logs |
-| `make psql` | drops into psql against the dev DB |
-| `make seed` | runs `scripts/seed.sh` (categories + sample items + tables for demos) |
+| Target                          | What it does                                                          |
+| ------------------------------- | --------------------------------------------------------------------- |
+| `make dev`                      | `docker compose up` — dev stack                                       |
+| `make dev-down`                 | `docker compose down`                                                 |
+| `make migrate`                  | Apply pending SQL migrations against the running DB                   |
+| `make migrate-new name=add_foo` | Scaffold `backend/migrations/NNN_add_foo.sql`                         |
+| `make test`                     | `go test ./...` + `pnpm --filter frontend test`                       |
+| `make test-backend`             | backend tests only                                                    |
+| `make test-frontend`            | frontend tests only                                                   |
+| `make lint`                     | `golangci-lint run` + `pnpm lint` + `pnpm format:check`               |
+| `make fmt`                      | `gofmt -w` + `pnpm format`                                            |
+| `make commit`                   | runs `scripts/commit.sh` — interactive conventional commit            |
+| `make build-prod`               | builds prod images via `docker-compose.prod.yml`                      |
+| `make logs`                     | tails docker compose logs                                             |
+| `make psql`                     | drops into psql against the dev DB                                    |
+| `make seed`                     | runs `scripts/seed.sh` (categories + sample items + tables for demos) |
 
 ## Migration workflow
 

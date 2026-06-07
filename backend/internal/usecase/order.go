@@ -6,8 +6,8 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
-	"github.com/your-handle/brewly/pkg/sse"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/pkg/sse"
 )
 
 // validTransitions maps each non-terminal status to the only valid next status.

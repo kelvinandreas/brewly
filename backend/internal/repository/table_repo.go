@@ -8,12 +8,12 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/your-handle/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/domain"
 	"gorm.io/gorm"
 )
 
 type gormTable struct {
-	ID           uuid.UUID  `gorm:"type:uuid;primaryKey"`
+	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`
 	Label        string
 	TokenVersion int
 	CreatedAt    time.Time

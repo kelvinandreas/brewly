@@ -7,13 +7,13 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/domain"
 	"gorm.io/gorm"
 )
 
 type gormMenuItem struct {
-	ID          uuid.UUID  `gorm:"type:uuid;primaryKey"`
-	CategoryID  uuid.UUID  `gorm:"type:uuid"`
+	ID          uuid.UUID `gorm:"type:uuid;primaryKey"`
+	CategoryID  uuid.UUID `gorm:"type:uuid"`
 	Name        string
 	Description *string
 	PriceMinor  int64

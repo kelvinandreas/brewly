@@ -8,11 +8,11 @@ import (
 	"strconv"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
-	"github.com/your-handle/brewly/internal/middleware"
-	"github.com/your-handle/brewly/internal/usecase"
-	"github.com/your-handle/brewly/pkg/response"
-	"github.com/your-handle/brewly/pkg/youtube"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/middleware"
+	"github.com/kelvinandreas/brewly/internal/usecase"
+	"github.com/kelvinandreas/brewly/pkg/response"
+	"github.com/kelvinandreas/brewly/pkg/youtube"
 )
 
 // youtubeClient is a local interface so we don't import pkg/youtube in handler tests.

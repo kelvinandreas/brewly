@@ -34,8 +34,7 @@ export function useCategories() {
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) =>
-      apiFetch<void>(`/api/categories/${id}`, { method: 'DELETE' }),
+    mutationFn: (id: string) => apiFetch<void>(`/api/categories/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: categoryKeys.all }),
   })
 

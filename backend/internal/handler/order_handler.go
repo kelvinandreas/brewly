@@ -8,10 +8,10 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
-	"github.com/your-handle/brewly/internal/middleware"
-	"github.com/your-handle/brewly/internal/usecase"
-	"github.com/your-handle/brewly/pkg/response"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/middleware"
+	"github.com/kelvinandreas/brewly/internal/usecase"
+	"github.com/kelvinandreas/brewly/pkg/response"
 )
 
 // OrderHandler handles /api/orders endpoints.

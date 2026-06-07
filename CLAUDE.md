@@ -4,14 +4,14 @@ Brewly is a self-hosted, open-source POS for a single small cafe. Customers orde
 
 ## Stack
 
-| Layer | Tool |
-|---|---|
-| Backend | Go 1.23, Chi v5, GORM |
-| Frontend | React 19, Vite, TanStack Router/Query, Tailwind |
-| Database | PostgreSQL 16 |
-| Auth | JWT access (15m) + refresh httpOnly cookie (7d); customer table-token JWT (4h) |
-| Real-time | SSE (Server-Sent Events) — never WebSocket in v1 |
-| Containerization | Docker Compose |
+| Layer            | Tool                                                                           |
+| ---------------- | ------------------------------------------------------------------------------ |
+| Backend          | Go 1.25, Chi v5, GORM                                                          |
+| Frontend         | React 19, Vite, TanStack Router/Query, Tailwind                                |
+| Database         | PostgreSQL 16                                                                  |
+| Auth             | JWT access (15m) + refresh httpOnly cookie (7d); customer table-token JWT (4h) |
+| Real-time        | SSE (Server-Sent Events) — never WebSocket in v1                               |
+| Containerization | Docker Compose                                                                 |
 
 ## Architecture — non-negotiable layer rules
 

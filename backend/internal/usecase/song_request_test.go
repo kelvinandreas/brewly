@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
-	"github.com/your-handle/brewly/internal/usecase"
-	"github.com/your-handle/brewly/pkg/sse"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/usecase"
+	"github.com/kelvinandreas/brewly/pkg/sse"
 )
 
 // ─── mock repository ──────────────────────────────────────────────────────────

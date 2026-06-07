@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
-	jwtpkg "github.com/your-handle/brewly/pkg/jwt"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	jwtpkg "github.com/kelvinandreas/brewly/pkg/jwt"
 	"golang.org/x/crypto/bcrypt"
 )
 

@@ -37,13 +37,27 @@ function MenuPage() {
   const [showCategoryForm, setShowCategoryForm] = useState(false)
   const [showItemForm, setShowItemForm] = useState(false)
 
-  const { listQuery: catQuery, createMutation: catCreate, updateMutation: catUpdate, deleteMutation: catDelete } = useCategories()
-  const { listQuery: itemQuery, createMutation: itemCreate, updateMutation: itemUpdate, deleteMutation: itemDelete } = useMenuItems(
-    selectedCategoryId ? { categoryId: selectedCategoryId } : {}
-  )
+  const {
+    listQuery: catQuery,
+    createMutation: catCreate,
+    updateMutation: catUpdate,
+    deleteMutation: catDelete,
+  } = useCategories()
+  const {
+    listQuery: itemQuery,
+    createMutation: itemCreate,
+    updateMutation: itemUpdate,
+    deleteMutation: itemDelete,
+  } = useMenuItems(selectedCategoryId ? { categoryId: selectedCategoryId } : {})
 
-  const catForm = useForm<CategoryForm>({ resolver: zodResolver(categorySchema), defaultValues: { name: '', displayOrder: 0 } })
-  const itemForm = useForm<MenuItemForm>({ resolver: zodResolver(menuItemSchema), defaultValues: { name: '', description: '', priceMinor: 0, imageUrl: '', isAvailable: true } })
+  const catForm = useForm<CategoryForm>({
+    resolver: zodResolver(categorySchema),
+    defaultValues: { name: '', displayOrder: 0 },
+  })
+  const itemForm = useForm<MenuItemForm>({
+    resolver: zodResolver(menuItemSchema),
+    defaultValues: { name: '', description: '', priceMinor: 0, imageUrl: '', isAvailable: true },
+  })
 
   function openCategoryEdit(cat: Category) {
     setEditingCategory(cat)
@@ -114,7 +128,10 @@ function MenuPage() {
               <div className="flex items-center justify-between mb-3">
                 <h2 className="font-semibold text-gray-700">Categories</h2>
                 <button
-                  onClick={() => { closeCategoryForm(); setShowCategoryForm(true) }}
+                  onClick={() => {
+                    closeCategoryForm()
+                    setShowCategoryForm(true)
+                  }}
                   className="text-xs bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600"
                 >
                   + Add
@@ -133,9 +150,16 @@ function MenuPage() {
                       {cat.name}
                     </span>
                     <div className="flex gap-1 ml-1">
-                      <button onClick={() => openCategoryEdit(cat)} className="text-gray-400 hover:text-gray-700 text-xs">✎</button>
                       <button
-                        onClick={() => { if (confirm(`Delete "${cat.name}"?`)) catDelete.mutate(cat.id) }}
+                        onClick={() => openCategoryEdit(cat)}
+                        className="text-gray-400 hover:text-gray-700 text-xs"
+                      >
+                        ✎
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Delete "${cat.name}"?`)) catDelete.mutate(cat.id)
+                        }}
                         className="text-gray-400 hover:text-red-600 text-xs"
                       >
                         ✕
@@ -146,15 +170,24 @@ function MenuPage() {
               </ul>
 
               {showCategoryForm && (
-                <form onSubmit={catForm.handleSubmit(submitCategory)} className="mt-4 space-y-2 border-t pt-4">
-                  <p className="text-xs font-medium text-gray-600">{editingCategory ? 'Edit category' : 'New category'}</p>
+                <form
+                  onSubmit={catForm.handleSubmit(submitCategory)}
+                  className="mt-4 space-y-2 border-t pt-4"
+                >
+                  <p className="text-xs font-medium text-gray-600">
+                    {editingCategory ? 'Edit category' : 'New category'}
+                  </p>
                   <div>
                     <input
                       {...catForm.register('name')}
                       placeholder="Name"
                       className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
                     />
-                    {catForm.formState.errors.name && <p className="text-red-500 text-xs mt-0.5">{catForm.formState.errors.name.message}</p>}
+                    {catForm.formState.errors.name && (
+                      <p className="text-red-500 text-xs mt-0.5">
+                        {catForm.formState.errors.name.message}
+                      </p>
+                    )}
                   </div>
                   <div>
                     <input
@@ -163,13 +196,25 @@ function MenuPage() {
                       placeholder="Display order"
                       className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
                     />
-                    {catForm.formState.errors.displayOrder && <p className="text-red-500 text-xs mt-0.5">{catForm.formState.errors.displayOrder.message}</p>}
+                    {catForm.formState.errors.displayOrder && (
+                      <p className="text-red-500 text-xs mt-0.5">
+                        {catForm.formState.errors.displayOrder.message}
+                      </p>
+                    )}
                   </div>
                   <div className="flex gap-2">
-                    <button type="submit" disabled={catCreate.isPending || catUpdate.isPending} className="flex-1 bg-amber-500 text-white text-xs py-1 rounded hover:bg-amber-600 disabled:opacity-60">
+                    <button
+                      type="submit"
+                      disabled={catCreate.isPending || catUpdate.isPending}
+                      className="flex-1 bg-amber-500 text-white text-xs py-1 rounded hover:bg-amber-600 disabled:opacity-60"
+                    >
                       Save
                     </button>
-                    <button type="button" onClick={closeCategoryForm} className="flex-1 bg-gray-100 text-gray-700 text-xs py-1 rounded hover:bg-gray-200">
+                    <button
+                      type="button"
+                      onClick={closeCategoryForm}
+                      className="flex-1 bg-gray-100 text-gray-700 text-xs py-1 rounded hover:bg-gray-200"
+                    >
                       Cancel
                     </button>
                   </div>
@@ -189,7 +234,10 @@ function MenuPage() {
                 </h2>
                 {selectedCategoryId && (
                   <button
-                    onClick={() => { closeItemForm(); setShowItemForm(true) }}
+                    onClick={() => {
+                      closeItemForm()
+                      setShowItemForm(true)
+                    }}
                     className="text-xs bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600"
                   >
                     + Add item
@@ -198,50 +246,115 @@ function MenuPage() {
               </div>
 
               {!selectedCategoryId && (
-                <p className="text-sm text-gray-400">Choose a category on the left to manage its items.</p>
+                <p className="text-sm text-gray-400">
+                  Choose a category on the left to manage its items.
+                </p>
               )}
 
-              {selectedCategoryId && itemQuery.isLoading && <p className="text-sm text-gray-400">Loading…</p>}
+              {selectedCategoryId && itemQuery.isLoading && (
+                <p className="text-sm text-gray-400">Loading…</p>
+              )}
 
               {selectedCategoryId && showItemForm && (
-                <form onSubmit={itemForm.handleSubmit(submitItem)} className="mb-4 p-3 bg-gray-50 rounded border space-y-2">
-                  <p className="text-xs font-medium text-gray-600">{editingItem ? 'Edit item' : 'New item'}</p>
+                <form
+                  onSubmit={itemForm.handleSubmit(submitItem)}
+                  className="mb-4 p-3 bg-gray-50 rounded border space-y-2"
+                >
+                  <p className="text-xs font-medium text-gray-600">
+                    {editingItem ? 'Edit item' : 'New item'}
+                  </p>
                   <div className="grid grid-cols-2 gap-2">
                     <div>
-                      <input {...itemForm.register('name')} placeholder="Name" className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400" />
-                      {itemForm.formState.errors.name && <p className="text-red-500 text-xs">{itemForm.formState.errors.name.message}</p>}
+                      <input
+                        {...itemForm.register('name')}
+                        placeholder="Name"
+                        className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      />
+                      {itemForm.formState.errors.name && (
+                        <p className="text-red-500 text-xs">
+                          {itemForm.formState.errors.name.message}
+                        </p>
+                      )}
                     </div>
                     <div>
-                      <input {...itemForm.register('priceMinor')} type="number" placeholder="Price (IDR minor)" className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400" />
-                      {itemForm.formState.errors.priceMinor && <p className="text-red-500 text-xs">{itemForm.formState.errors.priceMinor.message}</p>}
+                      <input
+                        {...itemForm.register('priceMinor')}
+                        type="number"
+                        placeholder="Price (IDR minor)"
+                        className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
+                      />
+                      {itemForm.formState.errors.priceMinor && (
+                        <p className="text-red-500 text-xs">
+                          {itemForm.formState.errors.priceMinor.message}
+                        </p>
+                      )}
                     </div>
                   </div>
-                  <input {...itemForm.register('description')} placeholder="Description (optional)" className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400" />
-                  <input {...itemForm.register('imageUrl')} placeholder="Image URL (optional)" className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400" />
-                  {itemForm.formState.errors.imageUrl && <p className="text-red-500 text-xs">{itemForm.formState.errors.imageUrl.message}</p>}
+                  <input
+                    {...itemForm.register('description')}
+                    placeholder="Description (optional)"
+                    className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
+                  />
+                  <input
+                    {...itemForm.register('imageUrl')}
+                    placeholder="Image URL (optional)"
+                    className="w-full border rounded px-2 py-1 text-sm focus:outline-none focus:ring-1 focus:ring-amber-400"
+                  />
+                  {itemForm.formState.errors.imageUrl && (
+                    <p className="text-red-500 text-xs">
+                      {itemForm.formState.errors.imageUrl.message}
+                    </p>
+                  )}
                   <label className="flex items-center gap-2 text-sm text-gray-700">
-                    <input type="checkbox" {...itemForm.register('isAvailable')} className="rounded" />
+                    <input
+                      type="checkbox"
+                      {...itemForm.register('isAvailable')}
+                      className="rounded"
+                    />
                     Available
                   </label>
                   <div className="flex gap-2">
-                    <button type="submit" disabled={itemCreate.isPending || itemUpdate.isPending} className="flex-1 bg-amber-500 text-white text-xs py-1 rounded hover:bg-amber-600 disabled:opacity-60">Save</button>
-                    <button type="button" onClick={closeItemForm} className="flex-1 bg-gray-100 text-gray-700 text-xs py-1 rounded hover:bg-gray-200">Cancel</button>
+                    <button
+                      type="submit"
+                      disabled={itemCreate.isPending || itemUpdate.isPending}
+                      className="flex-1 bg-amber-500 text-white text-xs py-1 rounded hover:bg-amber-600 disabled:opacity-60"
+                    >
+                      Save
+                    </button>
+                    <button
+                      type="button"
+                      onClick={closeItemForm}
+                      className="flex-1 bg-gray-100 text-gray-700 text-xs py-1 rounded hover:bg-gray-200"
+                    >
+                      Cancel
+                    </button>
                   </div>
                 </form>
               )}
 
               <div className="space-y-2">
                 {items.map((item) => (
-                  <div key={item.id} className="flex items-center justify-between border rounded px-3 py-2">
+                  <div
+                    key={item.id}
+                    className="flex items-center justify-between border rounded px-3 py-2"
+                  >
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="text-sm font-medium text-gray-800 truncate">{item.name}</span>
+                        <span className="text-sm font-medium text-gray-800 truncate">
+                          {item.name}
+                        </span>
                         {!item.isAvailable && (
-                          <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded">Unavailable</span>
+                          <span className="text-xs bg-red-100 text-red-600 px-1.5 py-0.5 rounded">
+                            Unavailable
+                          </span>
                         )}
                       </div>
-                      {item.description && <p className="text-xs text-gray-400 truncate">{item.description}</p>}
-                      <p className="text-xs text-amber-600 font-medium">{formatIDR(item.priceMinor)}</p>
+                      {item.description && (
+                        <p className="text-xs text-gray-400 truncate">{item.description}</p>
+                      )}
+                      <p className="text-xs text-amber-600 font-medium">
+                        {formatIDR(item.priceMinor)}
+                      </p>
                     </div>
                     <div className="flex gap-2 ml-3">
                       <button
@@ -252,9 +365,16 @@ function MenuPage() {
                       >
                         {item.isAvailable ? 'Available' : 'Unavailable'}
                       </button>
-                      <button onClick={() => openItemEdit(item)} className="text-gray-400 hover:text-gray-700 text-xs px-1">✎</button>
                       <button
-                        onClick={() => { if (confirm(`Delete "${item.name}"?`)) itemDelete.mutate(item.id) }}
+                        onClick={() => openItemEdit(item)}
+                        className="text-gray-400 hover:text-gray-700 text-xs px-1"
+                      >
+                        ✎
+                      </button>
+                      <button
+                        onClick={() => {
+                          if (confirm(`Delete "${item.name}"?`)) itemDelete.mutate(item.id)
+                        }}
                         className="text-gray-400 hover:text-red-600 text-xs px-1"
                       >
                         ✕

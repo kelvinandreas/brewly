@@ -61,8 +61,7 @@ export function useAuth() {
   return {
     user: meQuery.data ?? null,
     isLoading: meQuery.isLoading,
-    isOwnerNotExists:
-      meQuery.error instanceof ApiError && meQuery.error.status === 404,
+    isOwnerNotExists: meQuery.error instanceof ApiError && meQuery.error.status === 404,
     login: loginMutation,
     registerOwner: registerOwnerMutation,
     logout: logoutMutation,

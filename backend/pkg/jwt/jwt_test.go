@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	jwtpkg "github.com/your-handle/brewly/pkg/jwt"
+	jwtpkg "github.com/kelvinandreas/brewly/pkg/jwt"
 )
 
 const (

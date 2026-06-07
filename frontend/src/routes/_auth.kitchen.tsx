@@ -45,9 +45,7 @@ function KitchenPage() {
   const initialOrders = listQuery.data ?? []
   const orders = useKitchenSSE(getAccessToken(), initialOrders)
 
-  const activeOrders = orders.filter(
-    (o) => o.status !== 'completed' && o.status !== 'cancelled',
-  )
+  const activeOrders = orders.filter((o) => o.status !== 'completed' && o.status !== 'cancelled')
 
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -126,9 +124,7 @@ function OrderCard({
           </li>
         ))}
       </ul>
-      {order.note && (
-        <p className="text-xs text-gray-500 italic mb-2">{order.note}</p>
-      )}
+      {order.note && <p className="text-xs text-gray-500 italic mb-2">{order.note}</p>}
       <div className="flex items-center justify-between">
         <span className="text-xs font-bold text-amber-600">{formatIDR(order.totalMinor)}</span>
         <div className="flex gap-1">

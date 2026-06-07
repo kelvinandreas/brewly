@@ -26,11 +26,15 @@ interface QRModalData {
 }
 
 function TablesPage() {
-  const { listQuery, createMutation, updateMutation, deleteMutation, regenerateTokenMutation } = useTables()
+  const { listQuery, createMutation, updateMutation, deleteMutation, regenerateTokenMutation } =
+    useTables()
   const [qrModal, setQRModal] = useState<QRModalData | null>(null)
   const [editingTable, setEditingTable] = useState<Table | null>(null)
 
-  const form = useForm<TableForm>({ resolver: zodResolver(tableSchema), defaultValues: { label: '' } })
+  const form = useForm<TableForm>({
+    resolver: zodResolver(tableSchema),
+    defaultValues: { label: '' },
+  })
 
   function openQR(data: { tableLabel: string; qrToken: string; qrUrl: string; tableId: string }) {
     setQRModal({
@@ -47,14 +51,24 @@ function TablesPage() {
       setEditingTable(null)
     } else {
       const result: TableCreateResponse = await createMutation.mutateAsync(data)
-      openQR({ tableLabel: result.table.label, qrToken: result.qrToken, qrUrl: result.qrUrl, tableId: result.table.id })
+      openQR({
+        tableLabel: result.table.label,
+        qrToken: result.qrToken,
+        qrUrl: result.qrUrl,
+        tableId: result.table.id,
+      })
     }
     form.reset({ label: '' })
   }
 
   async function regenerate(table: Table) {
     const result: TableRegenerateResponse = await regenerateTokenMutation.mutateAsync(table.id)
-    openQR({ tableLabel: table.label, qrToken: result.qrToken, qrUrl: result.qrUrl, tableId: table.id })
+    openQR({
+      tableLabel: table.label,
+      qrToken: result.qrToken,
+      qrUrl: result.qrUrl,
+      tableId: table.id,
+    })
   }
 
   const tables = listQuery.data ?? []
@@ -66,7 +80,9 @@ function TablesPage() {
 
         {/* Create / Edit form */}
         <div className="bg-white rounded-lg border shadow-sm p-4 mb-6">
-          <h2 className="font-semibold text-gray-700 mb-3">{editingTable ? `Edit "${editingTable.label}"` : 'Add table'}</h2>
+          <h2 className="font-semibold text-gray-700 mb-3">
+            {editingTable ? `Edit "${editingTable.label}"` : 'Add table'}
+          </h2>
           <form onSubmit={form.handleSubmit(submitTable)} className="flex gap-3">
             <div className="flex-1">
               <input
@@ -88,7 +104,10 @@ function TablesPage() {
             {editingTable && (
               <button
                 type="button"
-                onClick={() => { setEditingTable(null); form.reset({ label: '' }) }}
+                onClick={() => {
+                  setEditingTable(null)
+                  form.reset({ label: '' })
+                }}
                 className="bg-gray-100 text-gray-700 px-4 py-2 rounded-md text-sm hover:bg-gray-200"
               >
                 Cancel
@@ -112,7 +131,10 @@ function TablesPage() {
               </div>
               <div className="flex gap-2">
                 <button
-                  onClick={() => { setEditingTable(table); form.reset({ label: table.label }) }}
+                  onClick={() => {
+                    setEditingTable(table)
+                    form.reset({ label: table.label })
+                  }}
                   className="text-xs border border-gray-300 text-gray-600 px-3 py-1.5 rounded hover:bg-gray-50"
                 >
                   Edit
@@ -125,13 +147,17 @@ function TablesPage() {
                   Regen QR
                 </button>
                 <button
-                  onClick={() => openQR({ tableLabel: table.label, qrToken: '', qrUrl: '', tableId: table.id })}
+                  onClick={() =>
+                    openQR({ tableLabel: table.label, qrToken: '', qrUrl: '', tableId: table.id })
+                  }
                   className="text-xs border border-blue-300 text-blue-700 px-3 py-1.5 rounded hover:bg-blue-50"
                 >
                   View QR
                 </button>
                 <button
-                  onClick={() => { if (confirm(`Delete table "${table.label}"?`)) deleteMutation.mutate(table.id) }}
+                  onClick={() => {
+                    if (confirm(`Delete table "${table.label}"?`)) deleteMutation.mutate(table.id)
+                  }}
                   className="text-xs border border-red-200 text-red-600 px-3 py-1.5 rounded hover:bg-red-50"
                 >
                   Delete
@@ -143,8 +169,14 @@ function TablesPage() {
 
         {/* QR Modal */}
         {qrModal && (
-          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setQRModal(null)}>
-            <div className="bg-white rounded-xl p-6 max-w-sm w-full mx-4 shadow-xl" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+            onClick={() => setQRModal(null)}
+          >
+            <div
+              className="bg-white rounded-xl p-6 max-w-sm w-full mx-4 shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
               <h3 className="font-bold text-gray-900 text-lg mb-1">{qrModal.tableLabel}</h3>
               <p className="text-xs text-gray-400 mb-4">Scan to open the customer menu</p>
               <div className="flex justify-center mb-4">
@@ -156,12 +188,14 @@ function TablesPage() {
               </div>
               {qrModal.qrUrl && (
                 <p className="text-xs text-gray-500 break-all mb-2">
-                  <span className="font-medium">URL: </span>{qrModal.qrUrl}
+                  <span className="font-medium">URL: </span>
+                  {qrModal.qrUrl}
                 </p>
               )}
               {qrModal.qrToken && (
                 <p className="text-xs text-gray-400 break-all">
-                  <span className="font-medium">Token: </span>{qrModal.qrToken.slice(0, 40)}…
+                  <span className="font-medium">Token: </span>
+                  {qrModal.qrToken.slice(0, 40)}…
                 </p>
               )}
               <button

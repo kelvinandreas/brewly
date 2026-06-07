@@ -26,7 +26,8 @@ export function useCustomerOrder(tableId: string) {
 
   const myOrdersQuery = useQuery({
     queryKey: customerOrderKeys.mine(tableId),
-    queryFn: () => customerFetch<{ orders: Order[] }>('/api/customer/orders/mine').then((d) => d.orders),
+    queryFn: () =>
+      customerFetch<{ orders: Order[] }>('/api/customer/orders/mine').then((d) => d.orders),
     enabled: !!getTableToken(),
   })
 

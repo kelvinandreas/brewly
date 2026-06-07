@@ -41,7 +41,9 @@ function CashierPage() {
   const { listQuery: tablesQuery } = useTables()
   const { listQuery: catQuery } = useCategories()
   const { listQuery: itemsQuery } = useMenuItems(
-    selectedCategoryId ? { categoryId: selectedCategoryId, availableOnly: true } : { availableOnly: true }
+    selectedCategoryId
+      ? { categoryId: selectedCategoryId, availableOnly: true }
+      : { availableOnly: true },
   )
   const { createMutation } = useOrders()
 
@@ -54,7 +56,7 @@ function CashierPage() {
     setCart((prev) => {
       const existing = prev.find((c) => c.menuItem.id === item.id)
       if (existing) {
-        return prev.map((c) => c.menuItem.id === item.id ? { ...c, quantity: c.quantity + 1 } : c)
+        return prev.map((c) => (c.menuItem.id === item.id ? { ...c, quantity: c.quantity + 1 } : c))
       }
       return [...prev, { menuItem: item, quantity: 1 }]
     })
@@ -67,8 +69,8 @@ function CashierPage() {
   function adjustQty(itemId: string, delta: number) {
     setCart((prev) =>
       prev
-        .map((c) => c.menuItem.id === itemId ? { ...c, quantity: c.quantity + delta } : c)
-        .filter((c) => c.quantity > 0)
+        .map((c) => (c.menuItem.id === itemId ? { ...c, quantity: c.quantity + delta } : c))
+        .filter((c) => c.quantity > 0),
     )
   }
 
@@ -82,7 +84,11 @@ function CashierPage() {
     })
     setPlacedOrder(result.order)
     setCart([])
-    payForm.reset({ method: 'cash', amountMinor: result.order.totalMinor, receivedMinor: result.order.totalMinor })
+    payForm.reset({
+      method: 'cash',
+      amountMinor: result.order.totalMinor,
+      receivedMinor: result.order.totalMinor,
+    })
   }
 
   async function recordPayment(data: PaymentForm) {
@@ -119,7 +125,10 @@ function CashierPage() {
           <p className="text-4xl mb-4">✓</p>
           <h2 className="text-xl font-bold text-gray-800 mb-2">Payment recorded</h2>
           <p className="text-sm text-gray-500 mb-6">Order is complete.</p>
-          <button onClick={resetAll} className="w-full bg-amber-500 text-white py-2 rounded-lg hover:bg-amber-600">
+          <button
+            onClick={resetAll}
+            className="w-full bg-amber-500 text-white py-2 rounded-lg hover:bg-amber-600"
+          >
             New order
           </button>
         </div>
@@ -138,7 +147,10 @@ function CashierPage() {
           <form onSubmit={payForm.handleSubmit(recordPayment)} className="space-y-3">
             <div>
               <label className="text-xs font-medium text-gray-600">Method</label>
-              <select {...payForm.register('method')} className="w-full border rounded-md px-3 py-2 text-sm mt-1">
+              <select
+                {...payForm.register('method')}
+                className="w-full border rounded-md px-3 py-2 text-sm mt-1"
+              >
                 <option value="cash">Cash</option>
                 <option value="qris">QRIS</option>
                 <option value="card">Card</option>
@@ -146,18 +158,33 @@ function CashierPage() {
             </div>
             <div>
               <label className="text-xs font-medium text-gray-600">Amount charged (IDR)</label>
-              <input {...payForm.register('amountMinor')} type="number" className="w-full border rounded-md px-3 py-2 text-sm mt-1" />
+              <input
+                {...payForm.register('amountMinor')}
+                type="number"
+                className="w-full border rounded-md px-3 py-2 text-sm mt-1"
+              />
             </div>
             <div>
               <label className="text-xs font-medium text-gray-600">Cash received (IDR)</label>
-              <input {...payForm.register('receivedMinor')} type="number" className="w-full border rounded-md px-3 py-2 text-sm mt-1" />
+              <input
+                {...payForm.register('receivedMinor')}
+                type="number"
+                className="w-full border rounded-md px-3 py-2 text-sm mt-1"
+              />
             </div>
             {paymentError && <p className="text-red-500 text-xs">{paymentError}</p>}
             <div className="flex gap-2">
-              <button type="submit" className="flex-1 bg-amber-500 text-white py-2 rounded-md text-sm hover:bg-amber-600">
+              <button
+                type="submit"
+                className="flex-1 bg-amber-500 text-white py-2 rounded-md text-sm hover:bg-amber-600"
+              >
                 Record payment
               </button>
-              <button type="button" onClick={resetAll} className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-md text-sm hover:bg-gray-200">
+              <button
+                type="button"
+                onClick={resetAll}
+                className="flex-1 bg-gray-100 text-gray-700 py-2 rounded-md text-sm hover:bg-gray-200"
+              >
                 Cancel
               </button>
             </div>
@@ -186,7 +213,9 @@ function CashierPage() {
               >
                 <option value="">— pick a table —</option>
                 {tables.map((t) => (
-                  <option key={t.id} value={t.id}>{t.label}</option>
+                  <option key={t.id} value={t.id}>
+                    {t.label}
+                  </option>
                 ))}
               </select>
             </div>
@@ -219,11 +248,15 @@ function CashierPage() {
                   className="bg-white rounded-lg border shadow-sm p-3 text-left hover:border-amber-300 hover:shadow-md transition-all"
                 >
                   <p className="text-sm font-semibold text-gray-800 truncate">{item.name}</p>
-                  <p className="text-xs text-amber-600 font-bold mt-1">{formatIDR(item.priceMinor)}</p>
+                  <p className="text-xs text-amber-600 font-bold mt-1">
+                    {formatIDR(item.priceMinor)}
+                  </p>
                 </button>
               ))}
               {items.length === 0 && (
-                <p className="col-span-3 text-sm text-gray-400 py-4 text-center">No items available</p>
+                <p className="col-span-3 text-sm text-gray-400 py-4 text-center">
+                  No items available
+                </p>
               )}
             </div>
           </div>
@@ -243,10 +276,25 @@ function CashierPage() {
                       <p className="text-xs text-amber-600">{formatIDR(c.menuItem.priceMinor)}</p>
                     </div>
                     <div className="flex items-center gap-1">
-                      <button onClick={() => adjustQty(c.menuItem.id, -1)} className="w-5 h-5 text-xs border rounded text-gray-600 hover:bg-gray-50">−</button>
+                      <button
+                        onClick={() => adjustQty(c.menuItem.id, -1)}
+                        className="w-5 h-5 text-xs border rounded text-gray-600 hover:bg-gray-50"
+                      >
+                        −
+                      </button>
                       <span className="text-xs w-4 text-center">{c.quantity}</span>
-                      <button onClick={() => adjustQty(c.menuItem.id, 1)} className="w-5 h-5 text-xs border rounded text-gray-600 hover:bg-gray-50">+</button>
-                      <button onClick={() => removeFromCart(c.menuItem.id)} className="text-red-400 hover:text-red-600 text-xs ml-1">✕</button>
+                      <button
+                        onClick={() => adjustQty(c.menuItem.id, 1)}
+                        className="w-5 h-5 text-xs border rounded text-gray-600 hover:bg-gray-50"
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => removeFromCart(c.menuItem.id)}
+                        className="text-red-400 hover:text-red-600 text-xs ml-1"
+                      >
+                        ✕
+                      </button>
                     </div>
                   </li>
                 ))}

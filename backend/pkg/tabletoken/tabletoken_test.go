@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/pkg/tabletoken"
+	"github.com/kelvinandreas/brewly/pkg/tabletoken"
 )
 
 const (

@@ -112,7 +112,13 @@ export interface OrderItem {
   updatedAt: string
 }
 
-export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'completed' | 'cancelled'
+export type OrderStatus =
+  | 'pending'
+  | 'confirmed'
+  | 'preparing'
+  | 'ready'
+  | 'completed'
+  | 'cancelled'
 export type OrderSource = 'customer_qr' | 'cashier_pos'
 
 export interface Order {

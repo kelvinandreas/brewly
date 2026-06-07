@@ -86,7 +86,9 @@ function LoginPage() {
                 placeholder="Your name"
               />
               {registerForm.formState.errors.name && (
-                <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.name.message}</p>
+                <p className="mt-1 text-xs text-red-600">
+                  {registerForm.formState.errors.name.message}
+                </p>
               )}
             </div>
             <div>
@@ -98,7 +100,9 @@ function LoginPage() {
                 placeholder="owner@cafe.com"
               />
               {registerForm.formState.errors.email && (
-                <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.email.message}</p>
+                <p className="mt-1 text-xs text-red-600">
+                  {registerForm.formState.errors.email.message}
+                </p>
               )}
             </div>
             <div>
@@ -110,7 +114,9 @@ function LoginPage() {
                 placeholder="Min. 8 characters"
               />
               {registerForm.formState.errors.password && (
-                <p className="mt-1 text-xs text-red-600">{registerForm.formState.errors.password.message}</p>
+                <p className="mt-1 text-xs text-red-600">
+                  {registerForm.formState.errors.password.message}
+                </p>
               )}
             </div>
             <button
@@ -155,7 +161,9 @@ function LoginPage() {
               placeholder="you@cafe.com"
             />
             {loginForm.formState.errors.email && (
-              <p className="mt-1 text-xs text-red-600">{loginForm.formState.errors.email.message}</p>
+              <p className="mt-1 text-xs text-red-600">
+                {loginForm.formState.errors.email.message}
+              </p>
             )}
           </div>
           <div>
@@ -166,7 +174,9 @@ function LoginPage() {
               className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
             {loginForm.formState.errors.password && (
-              <p className="mt-1 text-xs text-red-600">{loginForm.formState.errors.password.message}</p>
+              <p className="mt-1 text-xs text-red-600">
+                {loginForm.formState.errors.password.message}
+              </p>
             )}
           </div>
           <button

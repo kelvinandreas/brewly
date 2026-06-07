@@ -44,4 +44,4 @@ psql:
 	$(DOCKER_COMPOSE) exec postgres psql -U $${POSTGRES_USER:-brewly} -d $${POSTGRES_DB:-brewly}
 
 seed:
-	bash scripts/seed.sh
+	@echo "seed: create scripts/seed.sh with your fixture data first"

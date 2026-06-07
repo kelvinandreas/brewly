@@ -10,15 +10,15 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/domain"
 	"gorm.io/gorm"
 )
 
 // thingModel is the GORM model — separate from the domain entity.
 type thingModel struct {
-	ID        uuid.UUID      `gorm:"type:uuid;primaryKey"`
-	Name      string         `gorm:"not null"`
-	Status    string         `gorm:"not null"`
+	ID        uuid.UUID `gorm:"type:uuid;primaryKey"`
+	Name      string    `gorm:"not null"`
+	Status    string    `gorm:"not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 	DeletedAt gorm.DeletedAt `gorm:"index"`

@@ -1,4 +1,4 @@
-module github.com/your-handle/brewly
+module github.com/kelvinandreas/brewly
 
 go 1.25.0
 

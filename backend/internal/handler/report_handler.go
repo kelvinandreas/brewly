@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/your-handle/brewly/internal/usecase"
-	"github.com/your-handle/brewly/pkg/response"
+	"github.com/kelvinandreas/brewly/internal/usecase"
+	"github.com/kelvinandreas/brewly/pkg/response"
 )
 
 // ReportHandler handles /api/reports endpoints.

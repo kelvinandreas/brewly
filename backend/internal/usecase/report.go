@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/your-handle/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/domain"
 )
 
 // ReportUsecase handles reporting queries.

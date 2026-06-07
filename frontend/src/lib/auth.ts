@@ -2,8 +2,12 @@
 let _accessToken: string | null = null
 
 export const getAccessToken = (): string | null => _accessToken
-export const setAccessToken = (t: string): void => { _accessToken = t }
-export const clearAccessToken = (): void => { _accessToken = null }
+export const setAccessToken = (t: string): void => {
+  _accessToken = t
+}
+export const clearAccessToken = (): void => {
+  _accessToken = null
+}
 
 /** Silently exchange the httpOnly refresh cookie for a new access token. */
 export async function refreshAccess(): Promise<string | null> {

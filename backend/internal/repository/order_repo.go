@@ -7,16 +7,16 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/domain"
 	"gorm.io/gorm"
 )
 
 type gormOrder struct {
-	ID              uuid.UUID       `gorm:"type:uuid;primaryKey"`
-	TableID         uuid.UUID       `gorm:"type:uuid;not null"`
-	Status          string          `gorm:"not null"`
-	Source          string          `gorm:"not null"`
-	TotalMinor      int64           `gorm:"not null"`
+	ID              uuid.UUID `gorm:"type:uuid;primaryKey"`
+	TableID         uuid.UUID `gorm:"type:uuid;not null"`
+	Status          string    `gorm:"not null"`
+	Source          string    `gorm:"not null"`
+	TotalMinor      int64     `gorm:"not null"`
 	Note            string
 	CreatedByUserID *uuid.UUID      `gorm:"type:uuid"`
 	Items           []gormOrderItem `gorm:"foreignKey:OrderID"`

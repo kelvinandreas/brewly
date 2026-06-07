@@ -6,9 +6,9 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
-	"github.com/your-handle/brewly/internal/usecase"
-	"github.com/your-handle/brewly/pkg/sse"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/usecase"
+	"github.com/kelvinandreas/brewly/pkg/sse"
 )
 
 // ─── mock repositories ────────────────────────────────────────────────────────
@@ -82,8 +82,8 @@ func (r *mockOrderRepo) ListByTable(_ context.Context, tableID uuid.UUID, limit 
 }
 
 type mockMenuItemRepoForOrder struct {
-	items    map[uuid.UUID]*domain.MenuItem
-	findErr  error
+	items   map[uuid.UUID]*domain.MenuItem
+	findErr error
 }
 
 func newMockMenuItemRepoForOrder() *mockMenuItemRepoForOrder {

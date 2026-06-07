@@ -63,10 +63,14 @@ function OrdersPage() {
             <div key={order.id} className="p-4 flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[order.status]}`}>
+                  <span
+                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${STATUS_COLORS[order.status]}`}
+                  >
                     {order.status}
                   </span>
-                  <span className="text-xs text-gray-400 uppercase">{order.source === 'customer_qr' ? 'QR' : 'POS'}</span>
+                  <span className="text-xs text-gray-400 uppercase">
+                    {order.source === 'customer_qr' ? 'QR' : 'POS'}
+                  </span>
                 </div>
                 <ul className="text-sm text-gray-700 space-y-0.5">
                   {order.items.map((item) => (
@@ -81,11 +85,16 @@ function OrdersPage() {
               <div className="text-right shrink-0">
                 <p className="text-sm font-bold text-amber-600">{formatIDR(order.totalMinor)}</p>
                 <p className="text-xs text-gray-400 mt-0.5">
-                  {new Date(order.createdAt).toLocaleString('id-ID', { dateStyle: 'short', timeStyle: 'short' })}
+                  {new Date(order.createdAt).toLocaleString('id-ID', {
+                    dateStyle: 'short',
+                    timeStyle: 'short',
+                  })}
                 </p>
                 {order.status !== 'completed' && order.status !== 'cancelled' && (
                   <button
-                    onClick={() => { if (confirm('Cancel this order?')) cancelMutation.mutate(order.id) }}
+                    onClick={() => {
+                      if (confirm('Cancel this order?')) cancelMutation.mutate(order.id)
+                    }}
                     className="text-xs text-red-500 hover:text-red-700 mt-1"
                   >
                     Cancel

@@ -10,16 +10,16 @@ import (
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
 	"github.com/joho/godotenv"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/handler"
+	appMiddleware "github.com/kelvinandreas/brewly/internal/middleware"
+	"github.com/kelvinandreas/brewly/internal/repository"
+	"github.com/kelvinandreas/brewly/internal/usecase"
+	"github.com/kelvinandreas/brewly/pkg/db"
+	"github.com/kelvinandreas/brewly/pkg/sse"
+	"github.com/kelvinandreas/brewly/pkg/youtube"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
-	"github.com/your-handle/brewly/internal/domain"
-	"github.com/your-handle/brewly/internal/handler"
-	appMiddleware "github.com/your-handle/brewly/internal/middleware"
-	"github.com/your-handle/brewly/internal/repository"
-	"github.com/your-handle/brewly/internal/usecase"
-	"github.com/your-handle/brewly/pkg/db"
-	"github.com/your-handle/brewly/pkg/sse"
-	"github.com/your-handle/brewly/pkg/youtube"
 )
 
 func main() {
@@ -39,14 +39,14 @@ func main() {
 	log.Info().Msg("database connected")
 
 	// ── Repositories ──────────────────────────────────────────────────────────
-	userRepo        := repository.NewUserRepo(gormDB)
-	categoryRepo    := repository.NewCategoryRepo(gormDB)
-	menuItemRepo    := repository.NewMenuItemRepo(gormDB)
-	tableRepo       := repository.NewTableRepo(gormDB)
-	orderRepo       := repository.NewOrderRepo(gormDB)
-	paymentRepo     := repository.NewPaymentRepo(gormDB)
+	userRepo := repository.NewUserRepo(gormDB)
+	categoryRepo := repository.NewCategoryRepo(gormDB)
+	menuItemRepo := repository.NewMenuItemRepo(gormDB)
+	tableRepo := repository.NewTableRepo(gormDB)
+	orderRepo := repository.NewOrderRepo(gormDB)
+	paymentRepo := repository.NewPaymentRepo(gormDB)
 	songRequestRepo := repository.NewSongRequestRepo(gormDB)
-	reportRepo      := repository.NewReportRepo(gormDB)
+	reportRepo := repository.NewReportRepo(gormDB)
 
 	// ── Config ─────────────────────────────────────────────────────────────────
 	authCfg := usecase.AuthConfig{
@@ -62,34 +62,34 @@ func main() {
 
 	// ── SSE brokers ────────────────────────────────────────────────────────────
 	kitchenBroker := sse.NewBroker()
-	songBroker    := sse.NewBroker()
+	songBroker := sse.NewBroker()
 
 	// ── External clients ───────────────────────────────────────────────────────
 	ytClient := youtube.NewClient(os.Getenv("YOUTUBE_API_KEY"))
 
 	// ── Usecases ──────────────────────────────────────────────────────────────
-	authUC        := usecase.NewAuthUsecase(userRepo, authCfg)
-	userUC        := usecase.NewUserUsecase(userRepo)
-	categoryUC    := usecase.NewCategoryUsecase(categoryRepo)
-	menuItemUC    := usecase.NewMenuItemUsecase(menuItemRepo, categoryRepo)
-	tableUC       := usecase.NewTableUsecase(tableRepo, tableCfg)
-	orderUC       := usecase.NewOrderUsecase(orderRepo, menuItemRepo, kitchenBroker)
-	paymentUC     := usecase.NewPaymentUsecase(paymentRepo, orderRepo)
+	authUC := usecase.NewAuthUsecase(userRepo, authCfg)
+	userUC := usecase.NewUserUsecase(userRepo)
+	categoryUC := usecase.NewCategoryUsecase(categoryRepo)
+	menuItemUC := usecase.NewMenuItemUsecase(menuItemRepo, categoryRepo)
+	tableUC := usecase.NewTableUsecase(tableRepo, tableCfg)
+	orderUC := usecase.NewOrderUsecase(orderRepo, menuItemRepo, kitchenBroker)
+	paymentUC := usecase.NewPaymentUsecase(paymentRepo, orderRepo)
 	songRequestUC := usecase.NewSongRequestUsecase(songRequestRepo, songBroker)
-	reportUC      := usecase.NewReportUsecase(reportRepo)
+	reportUC := usecase.NewReportUsecase(reportRepo)
 
 	// ── Handlers ──────────────────────────────────────────────────────────────
-	authH        := handler.NewAuthHandler(authUC)
-	userH        := handler.NewUserHandler(userUC)
-	categoryH    := handler.NewCategoryHandler(categoryUC)
-	menuItemH    := handler.NewMenuItemHandler(menuItemUC)
-	tableH       := handler.NewTableHandler(tableUC)
-	orderH       := handler.NewOrderHandler(orderUC)
-	paymentH     := handler.NewPaymentHandler(paymentUC)
-	sseH         := handler.NewSSEHandler(kitchenBroker, songBroker, authCfg.AccessSecret)
-	customerH    := handler.NewCustomerHandler(categoryUC, menuItemUC, orderUC, songRequestUC, ytClient)
+	authH := handler.NewAuthHandler(authUC)
+	userH := handler.NewUserHandler(userUC)
+	categoryH := handler.NewCategoryHandler(categoryUC)
+	menuItemH := handler.NewMenuItemHandler(menuItemUC)
+	tableH := handler.NewTableHandler(tableUC)
+	orderH := handler.NewOrderHandler(orderUC)
+	paymentH := handler.NewPaymentHandler(paymentUC)
+	sseH := handler.NewSSEHandler(kitchenBroker, songBroker, authCfg.AccessSecret)
+	customerH := handler.NewCustomerHandler(categoryUC, menuItemUC, orderUC, songRequestUC, ytClient)
 	songRequestH := handler.NewSongRequestHandler(songRequestUC)
-	reportH      := handler.NewReportHandler(reportUC)
+	reportH := handler.NewReportHandler(reportUC)
 
 	// ── Router ─────────────────────────────────────────────────────────────────
 	r := chi.NewRouter()

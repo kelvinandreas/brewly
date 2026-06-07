@@ -15,7 +15,7 @@ linters:
 
 linters-settings:
   goimports:
-    local-prefixes: github.com/your-handle/brewly
+    local-prefixes: github.com/kelvinandreas/brewly
 
 issues:
   exclude-rules:

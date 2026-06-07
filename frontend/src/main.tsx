@@ -18,7 +18,17 @@ import { Route as reportsRoute } from './routes/_auth.reports'
 import { Route as tableCustomerRoute } from './routes/table.$tableId'
 import './index.css'
 
-const authTree = authRoute.addChildren([dashboardRoute, staffRoute, menuRoute, tablesRoute, kitchenRoute, cashierRoute, ordersRoute, songQueueRoute, reportsRoute])
+const authTree = authRoute.addChildren([
+  dashboardRoute,
+  staffRoute,
+  menuRoute,
+  tablesRoute,
+  kitchenRoute,
+  cashierRoute,
+  ordersRoute,
+  songQueueRoute,
+  reportsRoute,
+])
 
 const routeTree = rootRoute.addChildren([indexRoute, loginRoute, authTree, tableCustomerRoute])
 

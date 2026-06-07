@@ -18,8 +18,7 @@ export function useMenuItems(filters: { categoryId?: string; availableOnly?: boo
 
   const listQuery = useQuery({
     queryKey: menuItemKeys.list(filters),
-    queryFn: () =>
-      apiFetch<{ items: MenuItem[] }>(`/api/menu-items${qs}`).then((d) => d.items),
+    queryFn: () => apiFetch<{ items: MenuItem[] }>(`/api/menu-items${qs}`).then((d) => d.items),
   })
 
   const createMutation = useMutation({
@@ -59,8 +58,7 @@ export function useMenuItems(filters: { categoryId?: string; availableOnly?: boo
   })
 
   const deleteMutation = useMutation({
-    mutationFn: (id: string) =>
-      apiFetch<void>(`/api/menu-items/${id}`, { method: 'DELETE' }),
+    mutationFn: (id: string) => apiFetch<void>(`/api/menu-items/${id}`, { method: 'DELETE' }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: menuItemKeys.all }),
   })
 

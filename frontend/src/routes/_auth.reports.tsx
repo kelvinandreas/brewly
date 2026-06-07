@@ -68,9 +68,7 @@ function ReportsPage() {
         {tab === 'best-sellers' && (
           <BestSellersTab from={from} to={to} onFromChange={setFrom} onToChange={setTo} />
         )}
-        {tab === 'hourly' && (
-          <HourlyTab date={hourlyDate} onDateChange={setHourlyDate} />
-        )}
+        {tab === 'hourly' && <HourlyTab date={hourlyDate} onDateChange={setHourlyDate} />}
       </div>
     </div>
   )
@@ -200,11 +198,7 @@ function BestSellersTab({
   onFromChange: (v: string) => void
   onToChange: (v: string) => void
 }) {
-  const { data: rows, isLoading } = useBestSellersReport(
-    toRFC3339(from),
-    toRFC3339(to, true),
-    10,
-  )
+  const { data: rows, isLoading } = useBestSellersReport(toRFC3339(from), toRFC3339(to, true), 10)
 
   return (
     <div className="space-y-4">

@@ -9,14 +9,14 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgconn"
-	"github.com/your-handle/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/domain"
 	"gorm.io/gorm"
 )
 
 // gormUser is the GORM model for the users table.
 type gormUser struct {
-	ID             uuid.UUID  `gorm:"type:uuid;primaryKey"`
-	Email          string     `gorm:"uniqueIndex"`
+	ID             uuid.UUID `gorm:"type:uuid;primaryKey"`
+	Email          string    `gorm:"uniqueIndex"`
 	PasswordHash   string
 	Name           string
 	Role           string

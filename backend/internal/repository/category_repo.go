@@ -7,12 +7,12 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/domain"
 	"gorm.io/gorm"
 )
 
 type gormCategory struct {
-	ID           uuid.UUID  `gorm:"type:uuid;primaryKey"`
+	ID           uuid.UUID `gorm:"type:uuid;primaryKey"`
 	Name         string
 	DisplayOrder int
 	CreatedAt    time.Time

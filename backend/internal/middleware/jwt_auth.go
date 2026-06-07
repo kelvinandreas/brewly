@@ -7,9 +7,9 @@ import (
 	"slices"
 	"strings"
 
-	"github.com/your-handle/brewly/internal/domain"
-	jwtpkg "github.com/your-handle/brewly/pkg/jwt"
-	"github.com/your-handle/brewly/pkg/response"
+	"github.com/kelvinandreas/brewly/internal/domain"
+	jwtpkg "github.com/kelvinandreas/brewly/pkg/jwt"
+	"github.com/kelvinandreas/brewly/pkg/response"
 )
 
 // RequireAuth returns middleware that validates the Bearer access token and
@@ -54,4 +54,3 @@ func RoleFromCtx(ctx context.Context) string {
 	v, _ := ctx.Value(domain.ContextKeyRole).(string)
 	return v
 }
-

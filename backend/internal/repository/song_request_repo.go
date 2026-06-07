@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/your-handle/brewly/internal/domain"
+	"github.com/kelvinandreas/brewly/internal/domain"
 	"gorm.io/gorm"
 )
 
@@ -20,7 +20,7 @@ type gormSongRequest struct {
 	ChannelName    string    `gorm:"not null"`
 	ThumbnailURL   string    `gorm:"not null"`
 	Note           string
-	Status         string    `gorm:"not null"`
+	Status         string `gorm:"not null"`
 	CreatedAt      time.Time
 	UpdatedAt      time.Time
 }
