@@ -11,4 +11,10 @@ var (
 	ErrOwnerExists        = errors.New("owner account already exists")
 	ErrUnauthorized       = errors.New("unauthorized")
 	ErrForbidden          = errors.New("forbidden")
+
+	ErrCategoryNotFound  = errors.New("category not found")
+	ErrMenuItemNotFound  = errors.New("menu item not found")
+	ErrTableNotFound     = errors.New("table not found")
+	ErrTableLabelTaken   = errors.New("table label already in use")
+	ErrMenuItemUnavailable = errors.New("menu item unavailable")
 )
