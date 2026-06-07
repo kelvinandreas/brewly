@@ -66,10 +66,20 @@ function DashboardPage() {
             <h2 className="font-semibold text-gray-700">Orders</h2>
             <p className="mt-1 text-sm text-amber-500">Order history &amp; management</p>
           </Link>
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
+          <Link
+            to={'/song-queue' as string}
+            className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md hover:border-amber-300 transition-shadow"
+          >
             <h2 className="font-semibold text-gray-700">Song Queue</h2>
-            <p className="mt-1 text-sm text-gray-400">Coming in M4</p>
-          </div>
+            <p className="mt-1 text-sm text-amber-500">DJ board with live requests</p>
+          </Link>
+          <Link
+            to={'/reports' as string}
+            className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md hover:border-amber-300 transition-shadow"
+          >
+            <h2 className="font-semibold text-gray-700">Reports</h2>
+            <p className="mt-1 text-sm text-amber-500">Revenue, best sellers &amp; hourly stats</p>
+          </Link>
         </div>
       </div>
     </div>

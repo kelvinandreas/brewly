@@ -69,4 +69,27 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] frontend: routes/table.$tableId.tsx updated (cart + order placement + my orders)
 - [x] frontend: main.tsx + dashboard nav links updated
 
-## M4 — Songs, reports (pending)
+## M4 — Songs, reports
+
+- [x] backend: domain.SongRequest (entity + repo interface); domain.RevenueRow, BestSellerRow, HourlyVolumeRow; domain.ReportRepository
+- [x] backend: domain/errors.go additions (ErrSongRequestNotFound, ErrSongRequestRateLimited, ErrInvalidSongStatusTransition, ErrSongAlreadyPlaying)
+- [x] backend: domain/constants.go additions (SongQueued/Playing/Played/Skipped, SongRequestRateLimit=3)
+- [x] backend: pkg/youtube — YouTube Data API v3 client; ErrKeyNotConfigured sentinel
+- [x] backend: repository.SongRequestRepo (GORM, CountActiveByJTI, CountByStatus)
+- [x] backend: repository.ReportRepo (3 raw SQL aggregations: Revenue/BestSellers/HourlyVolume)
+- [x] backend: usecase.SongRequestUsecase (state machine, rate limit, single-playing invariant, SSE publish, tests)
+- [x] backend: usecase.ReportUsecase (thin delegation)
+- [x] backend: handler.SSEHandler updated — added songBroker + SongQueueStream; refactored shared stream() method
+- [x] backend: handler.SongRequestHandler — GET /api/song-requests, PATCH /api/song-requests/:id/status
+- [x] backend: handler.ReportHandler — GET /api/reports/revenue, /best-sellers, /hourly-volume
+- [x] backend: handler.CustomerHandler additions — GET /api/customer/songs/search, POST /api/customer/songs
+- [x] backend: main.go wired (all M4 routes: song-requests, reports, SSE song-queue, customer songs)
+- [x] frontend: types/api.ts additions (SongRequest, SongStatus, YouTubeVideoResult, SongQueueSSEEvent, RevenueRow, BestSellerRow, HourlyVolumeRow)
+- [x] frontend: hooks/useSongRequests (staff query + updateStatus mutation)
+- [x] frontend: hooks/useSongQueueSSE (useReducer with SSE fan-in for song queue)
+- [x] frontend: hooks/useCustomerSong (useYouTubeSearch + useSubmitSongRequest)
+- [x] frontend: hooks/useReports (useRevenueReport, useBestSellersReport, useHourlyVolumeReport)
+- [x] frontend: routes/_auth.song-queue.tsx (DJ board — 4-column, SSE-powered, skip/play actions)
+- [x] frontend: routes/_auth.reports.tsx (revenue + best-sellers + hourly tabs with date pickers)
+- [x] frontend: routes/table.$tableId.tsx updated (Songs tab — YouTube search, debounced, request with note)
+- [x] frontend: main.tsx + dashboard nav links updated

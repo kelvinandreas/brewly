@@ -9,7 +9,7 @@ import { useCategories } from '../hooks/useCategories'
 import { useMenuItems } from '../hooks/useMenuItems'
 import { useOrders } from '../hooks/useOrders'
 import { apiFetch } from '../lib/api'
-import type { MenuItem, Order, PaymentMethod } from '../types/api'
+import type { MenuItem, Order } from '../types/api'
 import { formatIDR } from '../lib/currency'
 
 export const Route = createRoute({

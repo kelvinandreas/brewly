@@ -18,8 +18,13 @@ var (
 	ErrTableLabelTaken     = errors.New("table label already in use")
 	ErrMenuItemUnavailable = errors.New("menu item unavailable")
 
-	ErrOrderNotFound            = errors.New("order not found")
-	ErrOrderCancelled           = errors.New("order is already cancelled")
-	ErrInvalidStatusTransition  = errors.New("invalid order status transition")
-	ErrPaymentConflict          = errors.New("payment already recorded for this order")
+	ErrOrderNotFound           = errors.New("order not found")
+	ErrOrderCancelled          = errors.New("order is already cancelled")
+	ErrInvalidStatusTransition = errors.New("invalid order status transition")
+	ErrPaymentConflict         = errors.New("payment already recorded for this order")
+
+	ErrSongRequestNotFound          = errors.New("song request not found")
+	ErrSongRequestRateLimited       = errors.New("too many active song requests")
+	ErrInvalidSongStatusTransition  = errors.New("invalid song request status transition")
+	ErrSongAlreadyPlaying           = errors.New("another song is already playing")
 )

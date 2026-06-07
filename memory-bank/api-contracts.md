@@ -107,5 +107,5 @@ Headers: `Content-Type: text/event-stream`, `Cache-Control: no-cache`, `Connecti
 | GET | `/api/customer/menu` | — — returns categories + available items |
 | POST | `/api/customer/orders` | `{items: [{menuItemId, quantity}], note?}` |
 | GET | `/api/customer/orders/mine` | — — last 5 orders for this table in the token's session window |
-| GET | `/api/customer/youtube/search?q=` | — — proxied YouTube Data API v3 search |
-| POST | `/api/customer/song-requests` | `{youtubeVideoId, title, channelName, thumbnailUrl, note?}` |
+| GET | `/api/customer/songs/search?q=&maxResults=` | — — proxied YouTube Data API v3 search; 501 if key not configured |
+| POST | `/api/customer/songs` | `{videoId, title, channelName, thumbnailUrl, note?}`; 429 if rate-limited (≥3 queued) |

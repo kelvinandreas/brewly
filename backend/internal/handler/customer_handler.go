@@ -1,27 +1,43 @@
 package handler
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"net/http"
+	"strconv"
 
 	"github.com/google/uuid"
 	"github.com/your-handle/brewly/internal/domain"
 	"github.com/your-handle/brewly/internal/middleware"
 	"github.com/your-handle/brewly/internal/usecase"
 	"github.com/your-handle/brewly/pkg/response"
+	"github.com/your-handle/brewly/pkg/youtube"
 )
+
+// youtubeClient is a local interface so we don't import pkg/youtube in handler tests.
+type youtubeClient interface {
+	Search(ctx context.Context, q string, maxResults int) ([]youtube.VideoResult, error)
+}
 
 // CustomerHandler handles unauthenticated customer endpoints (protected by table token).
 type CustomerHandler struct {
-	catUC   *usecase.CategoryUsecase
-	itemUC  *usecase.MenuItemUsecase
-	orderUC *usecase.OrderUsecase
+	catUC    *usecase.CategoryUsecase
+	itemUC   *usecase.MenuItemUsecase
+	orderUC  *usecase.OrderUsecase
+	songUC   *usecase.SongRequestUsecase
+	ytClient youtubeClient
 }
 
 // NewCustomerHandler constructs a CustomerHandler.
-func NewCustomerHandler(catUC *usecase.CategoryUsecase, itemUC *usecase.MenuItemUsecase, orderUC *usecase.OrderUsecase) *CustomerHandler {
-	return &CustomerHandler{catUC: catUC, itemUC: itemUC, orderUC: orderUC}
+func NewCustomerHandler(
+	catUC *usecase.CategoryUsecase,
+	itemUC *usecase.MenuItemUsecase,
+	orderUC *usecase.OrderUsecase,
+	songUC *usecase.SongRequestUsecase,
+	yt youtubeClient,
+) *CustomerHandler {
+	return &CustomerHandler{catUC: catUC, itemUC: itemUC, orderUC: orderUC, songUC: songUC, ytClient: yt}
 }
 
 // customerMenuItem is the public-facing shape for a customer (no internal fields).
@@ -142,4 +158,78 @@ func (h *CustomerHandler) MyOrders(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.OK(w, map[string]any{"orders": orders})
+}
+
+// YouTubeSearch GET /api/customer/songs/search?q=<query>&maxResults=<n>
+func (h *CustomerHandler) YouTubeSearch(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query().Get("q")
+	if q == "" {
+		response.Error(w, http.StatusBadRequest, "bad_request", "q is required")
+		return
+	}
+	maxResults := 10
+	if mr := r.URL.Query().Get("maxResults"); mr != "" {
+		n, err := strconv.Atoi(mr)
+		if err != nil || n <= 0 {
+			response.Error(w, http.StatusBadRequest, "bad_request", "invalid maxResults")
+			return
+		}
+		maxResults = n
+	}
+
+	results, err := h.ytClient.Search(r.Context(), q, maxResults)
+	if err != nil {
+		if errors.Is(err, youtube.ErrKeyNotConfigured) {
+			response.Error(w, http.StatusNotImplemented, "not_implemented", "YouTube search is not configured")
+			return
+		}
+		response.Error(w, http.StatusInternalServerError, "internal_error", "could not search YouTube")
+		return
+	}
+	response.OK(w, map[string]any{"results": results})
+}
+
+// SubmitSongRequest POST /api/customer/songs
+func (h *CustomerHandler) SubmitSongRequest(w http.ResponseWriter, r *http.Request) {
+	tableIDStr := middleware.TableIDFromCtx(r.Context())
+	tableID, err := uuid.Parse(tableIDStr)
+	if err != nil {
+		response.Error(w, http.StatusUnauthorized, "unauthorized", "invalid table context")
+		return
+	}
+	tokenJTI := middleware.TokenJTIFromCtx(r.Context())
+	if tokenJTI == "" {
+		response.Error(w, http.StatusUnauthorized, "unauthorized", "invalid table context")
+		return
+	}
+
+	var body struct {
+		VideoID      string `json:"videoId"`
+		Title        string `json:"title"`
+		ChannelName  string `json:"channelName"`
+		ThumbnailURL string `json:"thumbnailUrl"`
+		Note         string `json:"note"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		response.Error(w, http.StatusBadRequest, "bad_request", "invalid JSON")
+		return
+	}
+	if body.VideoID == "" || body.Title == "" {
+		response.ValidationError(w, []response.FieldError{
+			{Field: "videoId", Message: "required"},
+			{Field: "title", Message: "required"},
+		})
+		return
+	}
+
+	sr, err := h.songUC.Submit(r.Context(), tableID, tokenJTI, body.VideoID, body.Title, body.ChannelName, body.ThumbnailURL, body.Note)
+	if err != nil {
+		if errors.Is(err, domain.ErrSongRequestRateLimited) {
+			response.Error(w, http.StatusTooManyRequests, "rate_limited", "you have too many queued song requests")
+			return
+		}
+		response.Error(w, http.StatusInternalServerError, "internal_error", "could not submit song request")
+		return
+	}
+	response.Created(w, map[string]any{"songRequest": sr})
 }

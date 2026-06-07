@@ -149,3 +149,50 @@ export interface KitchenSSEEvent {
   type: 'order.created' | 'order.status_changed' | 'order.cancelled'
   payload: Order
 }
+
+export type SongStatus = 'queued' | 'playing' | 'played' | 'skipped'
+
+export interface SongRequest {
+  id: string
+  tableId: string
+  tokenJti: string
+  youtubeVideoId: string
+  title: string
+  channelName: string
+  thumbnailUrl: string
+  note: string
+  status: SongStatus
+  createdAt: string
+  updatedAt: string
+}
+
+export interface YouTubeVideoResult {
+  videoId: string
+  title: string
+  channelName: string
+  thumbnailUrl: string
+}
+
+export interface SongQueueSSEEvent {
+  type: 'song.requested' | 'song.status_changed'
+  payload: SongRequest
+}
+
+export interface RevenueRow {
+  period: string
+  totalMinor: number
+  orderCount: number
+}
+
+export interface BestSellerRow {
+  menuItemId: string
+  name: string
+  totalQuantity: number
+  totalMinor: number
+}
+
+export interface HourlyVolumeRow {
+  hour: number
+  orderCount: number
+  totalMinor: number
+}
