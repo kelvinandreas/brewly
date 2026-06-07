@@ -19,6 +19,7 @@ import (
 	"github.com/your-handle/brewly/internal/usecase"
 	"github.com/your-handle/brewly/pkg/db"
 	"github.com/your-handle/brewly/pkg/sse"
+	"github.com/your-handle/brewly/pkg/youtube"
 )
 
 func main() {
@@ -38,12 +39,14 @@ func main() {
 	log.Info().Msg("database connected")
 
 	// ── Repositories ──────────────────────────────────────────────────────────
-	userRepo     := repository.NewUserRepo(gormDB)
-	categoryRepo := repository.NewCategoryRepo(gormDB)
-	menuItemRepo := repository.NewMenuItemRepo(gormDB)
-	tableRepo    := repository.NewTableRepo(gormDB)
-	orderRepo    := repository.NewOrderRepo(gormDB)
-	paymentRepo  := repository.NewPaymentRepo(gormDB)
+	userRepo        := repository.NewUserRepo(gormDB)
+	categoryRepo    := repository.NewCategoryRepo(gormDB)
+	menuItemRepo    := repository.NewMenuItemRepo(gormDB)
+	tableRepo       := repository.NewTableRepo(gormDB)
+	orderRepo       := repository.NewOrderRepo(gormDB)
+	paymentRepo     := repository.NewPaymentRepo(gormDB)
+	songRequestRepo := repository.NewSongRequestRepo(gormDB)
+	reportRepo      := repository.NewReportRepo(gormDB)
 
 	// ── Config ─────────────────────────────────────────────────────────────────
 	authCfg := usecase.AuthConfig{
@@ -59,26 +62,34 @@ func main() {
 
 	// ── SSE brokers ────────────────────────────────────────────────────────────
 	kitchenBroker := sse.NewBroker()
+	songBroker    := sse.NewBroker()
+
+	// ── External clients ───────────────────────────────────────────────────────
+	ytClient := youtube.NewClient(os.Getenv("YOUTUBE_API_KEY"))
 
 	// ── Usecases ──────────────────────────────────────────────────────────────
-	authUC     := usecase.NewAuthUsecase(userRepo, authCfg)
-	userUC     := usecase.NewUserUsecase(userRepo)
-	categoryUC := usecase.NewCategoryUsecase(categoryRepo)
-	menuItemUC := usecase.NewMenuItemUsecase(menuItemRepo, categoryRepo)
-	tableUC    := usecase.NewTableUsecase(tableRepo, tableCfg)
-	orderUC    := usecase.NewOrderUsecase(orderRepo, menuItemRepo, kitchenBroker)
-	paymentUC  := usecase.NewPaymentUsecase(paymentRepo, orderRepo)
+	authUC        := usecase.NewAuthUsecase(userRepo, authCfg)
+	userUC        := usecase.NewUserUsecase(userRepo)
+	categoryUC    := usecase.NewCategoryUsecase(categoryRepo)
+	menuItemUC    := usecase.NewMenuItemUsecase(menuItemRepo, categoryRepo)
+	tableUC       := usecase.NewTableUsecase(tableRepo, tableCfg)
+	orderUC       := usecase.NewOrderUsecase(orderRepo, menuItemRepo, kitchenBroker)
+	paymentUC     := usecase.NewPaymentUsecase(paymentRepo, orderRepo)
+	songRequestUC := usecase.NewSongRequestUsecase(songRequestRepo, songBroker)
+	reportUC      := usecase.NewReportUsecase(reportRepo)
 
 	// ── Handlers ──────────────────────────────────────────────────────────────
-	authH     := handler.NewAuthHandler(authUC)
-	userH     := handler.NewUserHandler(userUC)
-	categoryH := handler.NewCategoryHandler(categoryUC)
-	menuItemH := handler.NewMenuItemHandler(menuItemUC)
-	tableH    := handler.NewTableHandler(tableUC)
-	orderH    := handler.NewOrderHandler(orderUC)
-	paymentH  := handler.NewPaymentHandler(paymentUC)
-	sseH      := handler.NewSSEHandler(kitchenBroker, authCfg.AccessSecret)
-	customerH := handler.NewCustomerHandler(categoryUC, menuItemUC, orderUC)
+	authH        := handler.NewAuthHandler(authUC)
+	userH        := handler.NewUserHandler(userUC)
+	categoryH    := handler.NewCategoryHandler(categoryUC)
+	menuItemH    := handler.NewMenuItemHandler(menuItemUC)
+	tableH       := handler.NewTableHandler(tableUC)
+	orderH       := handler.NewOrderHandler(orderUC)
+	paymentH     := handler.NewPaymentHandler(paymentUC)
+	sseH         := handler.NewSSEHandler(kitchenBroker, songBroker, authCfg.AccessSecret)
+	customerH    := handler.NewCustomerHandler(categoryUC, menuItemUC, orderUC, songRequestUC, ytClient)
+	songRequestH := handler.NewSongRequestHandler(songRequestUC)
+	reportH      := handler.NewReportHandler(reportUC)
 
 	// ── Router ─────────────────────────────────────────────────────────────────
 	r := chi.NewRouter()
@@ -168,8 +179,24 @@ func main() {
 		})
 	})
 
+	// Song requests — all authenticated staff
+	r.Route("/api/song-requests", func(r chi.Router) {
+		r.Use(appMiddleware.RequireAuth(authCfg.AccessSecret))
+		r.Get("/", songRequestH.List)
+		r.Patch("/{id}/status", songRequestH.UpdateStatus)
+	})
+
+	// Reports — owner only
+	r.Route("/api/reports", func(r chi.Router) {
+		r.Use(appMiddleware.RequireAuth(authCfg.AccessSecret, domain.RoleOwner))
+		r.Get("/revenue", reportH.Revenue)
+		r.Get("/best-sellers", reportH.BestSellers)
+		r.Get("/hourly-volume", reportH.HourlyVolume)
+	})
+
 	// SSE — token validated inside handler via query param
 	r.Get("/api/sse/kitchen", sseH.KitchenStream)
+	r.Get("/api/sse/song-queue", sseH.SongQueueStream)
 
 	// Customer endpoints — table token required
 	r.Route("/api/customer", func(r chi.Router) {
@@ -177,6 +204,8 @@ func main() {
 		r.Get("/menu", customerH.GetMenu)
 		r.Post("/orders", customerH.PlaceOrder)
 		r.Get("/orders/mine", customerH.MyOrders)
+		r.Get("/songs/search", customerH.YouTubeSearch)
+		r.Post("/songs", customerH.SubmitSongRequest)
 	})
 
 	port := os.Getenv("PORT")
