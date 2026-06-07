@@ -1,4 +1,4 @@
-import { createRoute } from '@tanstack/react-router'
+import { createRoute, Link } from '@tanstack/react-router'
 import { Route as authRoute } from './_auth'
 import { useAuth } from '../hooks/useAuth'
 
@@ -31,17 +31,23 @@ function DashboardPage() {
         </div>
 
         <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
+          <Link
+            to={'/menu' as string}
+            className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md hover:border-amber-300 transition-shadow"
+          >
             <h2 className="font-semibold text-gray-700">Menu</h2>
-            <p className="mt-1 text-sm text-gray-400">Coming in M2</p>
-          </div>
+            <p className="mt-1 text-sm text-amber-500">Manage categories &amp; items</p>
+          </Link>
+          <Link
+            to={'/tables' as string}
+            className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md hover:border-amber-300 transition-shadow"
+          >
+            <h2 className="font-semibold text-gray-700">Tables</h2>
+            <p className="mt-1 text-sm text-amber-500">Manage tables &amp; QR codes</p>
+          </Link>
           <div className="rounded-lg border bg-white p-6 shadow-sm">
             <h2 className="font-semibold text-gray-700">Orders</h2>
             <p className="mt-1 text-sm text-gray-400">Coming in M3</p>
-          </div>
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
-            <h2 className="font-semibold text-gray-700">Song Queue</h2>
-            <p className="mt-1 text-sm text-gray-400">Coming in M4</p>
           </div>
         </div>
       </div>
