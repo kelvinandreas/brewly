@@ -8,11 +8,14 @@ import { Route as loginRoute } from './routes/login'
 import { Route as authRoute } from './routes/_auth'
 import { Route as dashboardRoute } from './routes/_auth.dashboard'
 import { Route as staffRoute } from './routes/_auth.staff'
+import { Route as menuRoute } from './routes/_auth.menu'
+import { Route as tablesRoute } from './routes/_auth.tables'
+import { Route as tableCustomerRoute } from './routes/table.$tableId'
 import './index.css'
 
-const authTree = authRoute.addChildren([dashboardRoute, staffRoute])
+const authTree = authRoute.addChildren([dashboardRoute, staffRoute, menuRoute, tablesRoute])
 
-const routeTree = rootRoute.addChildren([indexRoute, loginRoute, authTree])
+const routeTree = rootRoute.addChildren([indexRoute, loginRoute, authTree, tableCustomerRoute])
 
 const queryClient = new QueryClient({
   defaultOptions: {

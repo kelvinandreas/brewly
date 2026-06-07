@@ -18,3 +18,9 @@ const (
 	ContextKeyUserID contextKey = "userID"
 	ContextKeyRole   contextKey = "role"
 )
+
+// Context keys injected by table-token middleware.
+const (
+	ContextKeyTableID  contextKey = "tableID"
+	ContextKeyTokenJTI contextKey = "tokenJTI"
+)
