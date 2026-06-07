@@ -45,9 +45,30 @@ function DashboardPage() {
             <h2 className="font-semibold text-gray-700">Tables</h2>
             <p className="mt-1 text-sm text-amber-500">Manage tables &amp; QR codes</p>
           </Link>
-          <div className="rounded-lg border bg-white p-6 shadow-sm">
+          <Link
+            to={'/cashier' as string}
+            className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md hover:border-amber-300 transition-shadow"
+          >
+            <h2 className="font-semibold text-gray-700">Cashier POS</h2>
+            <p className="mt-1 text-sm text-amber-500">Place orders &amp; record payments</p>
+          </Link>
+          <Link
+            to={'/kitchen' as string}
+            className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md hover:border-amber-300 transition-shadow"
+          >
+            <h2 className="font-semibold text-gray-700">Kitchen</h2>
+            <p className="mt-1 text-sm text-amber-500">Live order board (KDS)</p>
+          </Link>
+          <Link
+            to={'/orders' as string}
+            className="rounded-lg border bg-white p-6 shadow-sm hover:shadow-md hover:border-amber-300 transition-shadow"
+          >
             <h2 className="font-semibold text-gray-700">Orders</h2>
-            <p className="mt-1 text-sm text-gray-400">Coming in M3</p>
+            <p className="mt-1 text-sm text-amber-500">Order history &amp; management</p>
+          </Link>
+          <div className="rounded-lg border bg-white p-6 shadow-sm">
+            <h2 className="font-semibold text-gray-700">Song Queue</h2>
+            <p className="mt-1 text-sm text-gray-400">Coming in M4</p>
           </div>
         </div>
       </div>
