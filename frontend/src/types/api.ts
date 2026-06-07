@@ -100,3 +100,52 @@ export interface CustomerMenuCategory {
 export interface CustomerMenuResponse {
   categories: CustomerMenuCategory[]
 }
+
+export interface OrderItem {
+  id: string
+  orderId: string
+  menuItemId: string
+  nameSnapshot: string
+  priceMinorSnapshot: number
+  quantity: number
+  createdAt: string
+  updatedAt: string
+}
+
+export type OrderStatus = 'pending' | 'confirmed' | 'preparing' | 'ready' | 'completed' | 'cancelled'
+export type OrderSource = 'customer_qr' | 'cashier_pos'
+
+export interface Order {
+  id: string
+  tableId: string
+  status: OrderStatus
+  source: OrderSource
+  totalMinor: number
+  note: string
+  createdByUserId: string | null
+  items: OrderItem[]
+  createdAt: string
+  updatedAt: string
+}
+
+export type PaymentMethod = 'cash' | 'qris' | 'card'
+
+export interface Payment {
+  id: string
+  orderId: string
+  method: PaymentMethod
+  amountMinor: number
+  receivedMinor: number
+  recordedByUserId: string
+  createdAt: string
+}
+
+export interface PlaceOrderRequest {
+  items: { menuItemId: string; quantity: number }[]
+  note?: string
+}
+
+export interface KitchenSSEEvent {
+  type: 'order.created' | 'order.status_changed' | 'order.cancelled'
+  payload: Order
+}

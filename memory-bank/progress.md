@@ -46,6 +46,27 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] frontend: routes/table.$tableId.tsx (customer QR landing + menu browse)
 - [x] frontend: main.tsx route wiring; dashboard nav links updated
 
-## M3 — Orders, payments, KDS (pending)
+## M3 — Orders, payments, KDS
+
+- [x] backend: domain.Order, domain.OrderItem, domain.Payment (entities + repo interfaces)
+- [x] backend: domain/errors.go additions (ErrOrderNotFound, ErrOrderCancelled, ErrInvalidStatusTransition, ErrPaymentConflict)
+- [x] backend: domain/constants.go additions (order statuses, order sources, payment methods)
+- [x] backend: pkg/sse — generic fan-out SSE Broker
+- [x] backend: repository.OrderRepo (Create with items in tx, List, FindByID, UpdateStatus, ListByTable)
+- [x] backend: repository.PaymentRepo
+- [x] backend: usecase.OrderUsecase (state machine, SSE publish, tests)
+- [x] backend: usecase.PaymentUsecase
+- [x] backend: handler.SSEHandler — GET /api/sse/kitchen (token via query param)
+- [x] backend: handler.OrderHandler — staff CRUD + status + cancel
+- [x] backend: handler.PaymentHandler
+- [x] backend: handler.CustomerHandler additions — POST /api/customer/orders, GET /api/customer/orders/mine
+- [x] backend: main.go wired (all M3 routes, SSE broker)
+- [x] frontend: types/api.ts additions (Order, OrderItem, Payment, KitchenSSEEvent)
+- [x] frontend: hooks/useOrders, hooks/useCustomerOrder, hooks/useKitchenSSE
+- [x] frontend: routes/_auth.kitchen.tsx (KDS board, SSE-powered, 4-column status layout)
+- [x] frontend: routes/_auth.cashier.tsx (Cashier POS — table picker, menu, cart, payment form)
+- [x] frontend: routes/_auth.orders.tsx (order history with status filter tabs)
+- [x] frontend: routes/table.$tableId.tsx updated (cart + order placement + my orders)
+- [x] frontend: main.tsx + dashboard nav links updated
 
 ## M4 — Songs, reports (pending)

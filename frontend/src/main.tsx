@@ -10,10 +10,13 @@ import { Route as dashboardRoute } from './routes/_auth.dashboard'
 import { Route as staffRoute } from './routes/_auth.staff'
 import { Route as menuRoute } from './routes/_auth.menu'
 import { Route as tablesRoute } from './routes/_auth.tables'
+import { Route as kitchenRoute } from './routes/_auth.kitchen'
+import { Route as cashierRoute } from './routes/_auth.cashier'
+import { Route as ordersRoute } from './routes/_auth.orders'
 import { Route as tableCustomerRoute } from './routes/table.$tableId'
 import './index.css'
 
-const authTree = authRoute.addChildren([dashboardRoute, staffRoute, menuRoute, tablesRoute])
+const authTree = authRoute.addChildren([dashboardRoute, staffRoute, menuRoute, tablesRoute, kitchenRoute, cashierRoute, ordersRoute])
 
 const routeTree = rootRoute.addChildren([indexRoute, loginRoute, authTree, tableCustomerRoute])
 
