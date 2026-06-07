@@ -12,12 +12,13 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
+	"github.com/your-handle/brewly/internal/domain"
 	"github.com/your-handle/brewly/internal/handler"
 	appMiddleware "github.com/your-handle/brewly/internal/middleware"
 	"github.com/your-handle/brewly/internal/repository"
 	"github.com/your-handle/brewly/internal/usecase"
 	"github.com/your-handle/brewly/pkg/db"
-	"github.com/your-handle/brewly/internal/domain"
+	"github.com/your-handle/brewly/pkg/sse"
 )
 
 func main() {
@@ -36,12 +37,15 @@ func main() {
 	}
 	log.Info().Msg("database connected")
 
-	// ── Wiring ─────────────────────────────────────────────────────────────────
+	// ── Repositories ──────────────────────────────────────────────────────────
 	userRepo     := repository.NewUserRepo(gormDB)
 	categoryRepo := repository.NewCategoryRepo(gormDB)
 	menuItemRepo := repository.NewMenuItemRepo(gormDB)
 	tableRepo    := repository.NewTableRepo(gormDB)
+	orderRepo    := repository.NewOrderRepo(gormDB)
+	paymentRepo  := repository.NewPaymentRepo(gormDB)
 
+	// ── Config ─────────────────────────────────────────────────────────────────
 	authCfg := usecase.AuthConfig{
 		AccessSecret:  mustEnv("JWT_SECRET"),
 		RefreshSecret: mustEnv("REFRESH_SECRET"),
@@ -53,18 +57,28 @@ func main() {
 		FrontendURL:      envOr("FRONTEND_URL", "http://localhost:5173"),
 	}
 
+	// ── SSE brokers ────────────────────────────────────────────────────────────
+	kitchenBroker := sse.NewBroker()
+
+	// ── Usecases ──────────────────────────────────────────────────────────────
 	authUC     := usecase.NewAuthUsecase(userRepo, authCfg)
 	userUC     := usecase.NewUserUsecase(userRepo)
 	categoryUC := usecase.NewCategoryUsecase(categoryRepo)
 	menuItemUC := usecase.NewMenuItemUsecase(menuItemRepo, categoryRepo)
 	tableUC    := usecase.NewTableUsecase(tableRepo, tableCfg)
+	orderUC    := usecase.NewOrderUsecase(orderRepo, menuItemRepo, kitchenBroker)
+	paymentUC  := usecase.NewPaymentUsecase(paymentRepo, orderRepo)
 
+	// ── Handlers ──────────────────────────────────────────────────────────────
 	authH     := handler.NewAuthHandler(authUC)
 	userH     := handler.NewUserHandler(userUC)
 	categoryH := handler.NewCategoryHandler(categoryUC)
 	menuItemH := handler.NewMenuItemHandler(menuItemUC)
 	tableH    := handler.NewTableHandler(tableUC)
-	customerH := handler.NewCustomerHandler(categoryUC, menuItemUC)
+	orderH    := handler.NewOrderHandler(orderUC)
+	paymentH  := handler.NewPaymentHandler(paymentUC)
+	sseH      := handler.NewSSEHandler(kitchenBroker, authCfg.AccessSecret)
+	customerH := handler.NewCustomerHandler(categoryUC, menuItemUC, orderUC)
 
 	// ── Router ─────────────────────────────────────────────────────────────────
 	r := chi.NewRouter()
@@ -89,7 +103,6 @@ func main() {
 		r.Post("/register-owner", authH.RegisterOwner)
 		r.Post("/login", authH.Login)
 		r.Post("/refresh", authH.Refresh)
-		// logout and me require a valid access token
 		r.Group(func(r chi.Router) {
 			r.Use(appMiddleware.RequireAuth(authCfg.AccessSecret))
 			r.Post("/logout", authH.Logout)
@@ -135,10 +148,35 @@ func main() {
 		r.Get("/{id}/qr.png", tableH.GetQR)
 	})
 
+	// Orders — all authenticated staff can read; cashier+owner can create/cancel
+	r.Route("/api/orders", func(r chi.Router) {
+		r.Use(appMiddleware.RequireAuth(authCfg.AccessSecret))
+		r.Get("/", orderH.List)
+		r.Group(func(r chi.Router) {
+			r.Use(appMiddleware.RequireAuth(authCfg.AccessSecret, domain.RoleCashier, domain.RoleOwner))
+			r.Post("/", orderH.Create)
+		})
+		r.Route("/{id}", func(r chi.Router) {
+			r.Get("/", orderH.GetByID)
+			r.Patch("/status", orderH.AdvanceStatus)
+			r.Group(func(r chi.Router) {
+				r.Use(appMiddleware.RequireAuth(authCfg.AccessSecret, domain.RoleCashier, domain.RoleOwner))
+				r.Post("/cancel", orderH.Cancel)
+				r.Post("/payments", paymentH.Create)
+				r.Get("/payments", paymentH.List)
+			})
+		})
+	})
+
+	// SSE — token validated inside handler via query param
+	r.Get("/api/sse/kitchen", sseH.KitchenStream)
+
 	// Customer endpoints — table token required
 	r.Route("/api/customer", func(r chi.Router) {
 		r.Use(appMiddleware.RequireTableToken(tableCfg.TableTokenSecret, tableRepo))
 		r.Get("/menu", customerH.GetMenu)
+		r.Post("/orders", customerH.PlaceOrder)
+		r.Get("/orders/mine", customerH.MyOrders)
 	})
 
 	port := os.Getenv("PORT")
