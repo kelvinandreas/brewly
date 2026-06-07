@@ -26,7 +26,25 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] update memory-bank/api-contracts.md
 - [x] update memory-bank/database-schema.md
 
-## M2 — Menu, tables, QR (pending)
+## M2 — Menu, tables, QR
+
+- [x] backend: domain.Category, domain.MenuItem, domain.Table (entities + repo interfaces)
+- [x] backend: domain/errors.go additions (ErrCategoryNotFound, ErrMenuItemNotFound, ErrTableNotFound, ErrTableLabelTaken, ErrMenuItemUnavailable)
+- [x] backend: domain/constants.go additions (ContextKeyTableID, ContextKeyTokenJTI)
+- [x] backend: pkg/tabletoken — Sign/Verify, 4h TTL, claims {tid, tvr, jti}
+- [x] backend: pkg/qrcode — Generate() returns 256×256 PNG bytes
+- [x] backend: repository.CategoryRepo, repository.MenuItemRepo, repository.TableRepo (GORM)
+- [x] backend: middleware.RequireTableToken (sig → exp → DB lookup → token_version check → ctx inject)
+- [x] backend: usecase.CategoryUsecase, usecase.MenuItemUsecase, usecase.TableUsecase
+- [x] backend: handler.CategoryHandler, handler.MenuItemHandler, handler.TableHandler, handler.CustomerHandler
+- [x] backend: main.go wired (all M2 routes under correct auth middleware)
+- [x] frontend: types/api.ts additions (Category, MenuItem, Table, QR types, CustomerMenu types)
+- [x] frontend: lib/tableAuth.ts (module-scope table token store)
+- [x] frontend: hooks/useCategories, hooks/useMenuItems, hooks/useTables
+- [x] frontend: routes/_auth.menu.tsx (owner menu management, category + item CRUD)
+- [x] frontend: routes/_auth.tables.tsx (table list, QR modal, regen token)
+- [x] frontend: routes/table.$tableId.tsx (customer QR landing + menu browse)
+- [x] frontend: main.tsx route wiring; dashboard nav links updated
 
 ## M3 — Orders, payments, KDS (pending)
 
