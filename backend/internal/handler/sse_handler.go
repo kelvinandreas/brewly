@@ -12,20 +12,32 @@ import (
 
 // SSEHandler streams Server-Sent Events to connected clients.
 type SSEHandler struct {
-	kitchenBroker *sse.Broker
-	accessSecret  string
+	kitchenBroker  *sse.Broker
+	songBroker     *sse.Broker
+	accessSecret   string
 }
 
 // NewSSEHandler constructs an SSEHandler.
-func NewSSEHandler(kitchenBroker *sse.Broker, accessSecret string) *SSEHandler {
-	return &SSEHandler{kitchenBroker: kitchenBroker, accessSecret: accessSecret}
+func NewSSEHandler(kitchenBroker, songBroker *sse.Broker, accessSecret string) *SSEHandler {
+	return &SSEHandler{
+		kitchenBroker: kitchenBroker,
+		songBroker:    songBroker,
+		accessSecret:  accessSecret,
+	}
 }
 
 // KitchenStream GET /api/sse/kitchen?token=<access_jwt>
-// Streams order events to kitchen/cashier/owner clients.
-// EventSource cannot send Authorization headers, so the access token is passed
-// as a query parameter instead.
 func (h *SSEHandler) KitchenStream(w http.ResponseWriter, r *http.Request) {
+	h.stream(w, r, h.kitchenBroker)
+}
+
+// SongQueueStream GET /api/sse/song-queue?token=<access_jwt>
+func (h *SSEHandler) SongQueueStream(w http.ResponseWriter, r *http.Request) {
+	h.stream(w, r, h.songBroker)
+}
+
+// stream is the shared SSE pump: validates token, subscribes to broker, writes frames.
+func (h *SSEHandler) stream(w http.ResponseWriter, r *http.Request, broker *sse.Broker) {
 	token := r.URL.Query().Get("token")
 	if token == "" {
 		response.Error(w, http.StatusUnauthorized, "unauthorized", "token required")
@@ -49,7 +61,7 @@ func (h *SSEHandler) KitchenStream(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	flusher.Flush()
 
-	events, unsubscribe := h.kitchenBroker.Subscribe()
+	events, unsubscribe := broker.Subscribe()
 	defer unsubscribe()
 
 	keepAlive := time.NewTicker(15 * time.Second)
@@ -59,11 +71,9 @@ func (h *SSEHandler) KitchenStream(w http.ResponseWriter, r *http.Request) {
 		select {
 		case <-r.Context().Done():
 			return
-
 		case <-keepAlive.C:
 			fmt.Fprintf(w, ": keep-alive\n\n")
 			flusher.Flush()
-
 		case e, ok := <-events:
 			if !ok {
 				return
