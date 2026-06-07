@@ -37,7 +37,10 @@ func main() {
 	log.Info().Msg("database connected")
 
 	// ── Wiring ─────────────────────────────────────────────────────────────────
-	userRepo := repository.NewUserRepo(gormDB)
+	userRepo     := repository.NewUserRepo(gormDB)
+	categoryRepo := repository.NewCategoryRepo(gormDB)
+	menuItemRepo := repository.NewMenuItemRepo(gormDB)
+	tableRepo    := repository.NewTableRepo(gormDB)
 
 	authCfg := usecase.AuthConfig{
 		AccessSecret:  mustEnv("JWT_SECRET"),
@@ -45,11 +48,23 @@ func main() {
 		AccessTTL:     15 * time.Minute,
 		RefreshTTL:    7 * 24 * time.Hour,
 	}
-	authUC := usecase.NewAuthUsecase(userRepo, authCfg)
-	userUC := usecase.NewUserUsecase(userRepo)
+	tableCfg := usecase.TableConfig{
+		TableTokenSecret: mustEnv("TABLE_TOKEN_SECRET"),
+		FrontendURL:      envOr("FRONTEND_URL", "http://localhost:5173"),
+	}
 
-	authH := handler.NewAuthHandler(authUC)
-	userH := handler.NewUserHandler(userUC)
+	authUC     := usecase.NewAuthUsecase(userRepo, authCfg)
+	userUC     := usecase.NewUserUsecase(userRepo)
+	categoryUC := usecase.NewCategoryUsecase(categoryRepo)
+	menuItemUC := usecase.NewMenuItemUsecase(menuItemRepo, categoryRepo)
+	tableUC    := usecase.NewTableUsecase(tableRepo, tableCfg)
+
+	authH     := handler.NewAuthHandler(authUC)
+	userH     := handler.NewUserHandler(userUC)
+	categoryH := handler.NewCategoryHandler(categoryUC)
+	menuItemH := handler.NewMenuItemHandler(menuItemUC)
+	tableH    := handler.NewTableHandler(tableUC)
+	customerH := handler.NewCustomerHandler(categoryUC, menuItemUC)
 
 	// ── Router ─────────────────────────────────────────────────────────────────
 	r := chi.NewRouter()
@@ -91,6 +106,41 @@ func main() {
 		r.Delete("/{id}", userH.Delete)
 	})
 
+	// Categories — owner only
+	r.Route("/api/categories", func(r chi.Router) {
+		r.Use(appMiddleware.RequireAuth(authCfg.AccessSecret, domain.RoleOwner))
+		r.Get("/", categoryH.List)
+		r.Post("/", categoryH.Create)
+		r.Patch("/{id}", categoryH.Update)
+		r.Delete("/{id}", categoryH.Delete)
+	})
+
+	// Menu items — owner only
+	r.Route("/api/menu-items", func(r chi.Router) {
+		r.Use(appMiddleware.RequireAuth(authCfg.AccessSecret, domain.RoleOwner))
+		r.Get("/", menuItemH.List)
+		r.Post("/", menuItemH.Create)
+		r.Patch("/{id}", menuItemH.Update)
+		r.Delete("/{id}", menuItemH.Delete)
+	})
+
+	// Tables — owner only
+	r.Route("/api/tables", func(r chi.Router) {
+		r.Use(appMiddleware.RequireAuth(authCfg.AccessSecret, domain.RoleOwner))
+		r.Get("/", tableH.List)
+		r.Post("/", tableH.Create)
+		r.Patch("/{id}", tableH.Update)
+		r.Delete("/{id}", tableH.Delete)
+		r.Post("/{id}/regenerate-token", tableH.RegenerateToken)
+		r.Get("/{id}/qr.png", tableH.GetQR)
+	})
+
+	// Customer endpoints — table token required
+	r.Route("/api/customer", func(r chi.Router) {
+		r.Use(appMiddleware.RequireTableToken(tableCfg.TableTokenSecret, tableRepo))
+		r.Get("/menu", customerH.GetMenu)
+	})
+
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -108,4 +158,11 @@ func mustEnv(key string) string {
 		log.Fatal().Str("key", key).Msg("required environment variable not set")
 	}
 	return v
+}
+
+func envOr(key, fallback string) string {
+	if v := os.Getenv(key); v != "" {
+		return v
+	}
+	return fallback
 }
