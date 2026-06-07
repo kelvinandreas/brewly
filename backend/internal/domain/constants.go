@@ -47,3 +47,14 @@ const (
 	PaymentMethodQRIS = "qris"
 	PaymentMethodCard = "card"
 )
+
+// Song request status values.
+const (
+	SongQueued  = "queued"
+	SongPlaying = "playing"
+	SongPlayed  = "played"
+	SongSkipped = "skipped"
+)
+
+// SongRequestRateLimit is the max number of active (queued) requests per table-token JTI.
+const SongRequestRateLimit = 3
