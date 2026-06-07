@@ -18,13 +18,13 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 
 ## M1 — Auth
 
-- [ ] migrations/001_init.sql committed
-- [ ] migrations/002_seed_owner.sql (idempotent — only inserts if no owner)
-- [ ] backend: domain.User, repository.UserRepo, usecase.AuthUsecase, handler.AuthHandler
-- [ ] middleware.JWTAuth
-- [ ] frontend: /login route, useAuth hook, memory token store
-- [ ] update memory-bank/api-contracts.md
-- [ ] update memory-bank/database-schema.md
+- [x] migrations/001_init.sql committed (full schema — all 8 tables)
+- [x] migrations/002_seed_owner.sql (placeholder; registration is self-serve via API)
+- [x] backend: domain.User, repository.UserRepo, usecase.AuthUsecase, handler.AuthHandler
+- [x] middleware.JWTAuth (RequireAuth with role enforcement)
+- [x] frontend: /login route, useAuth hook, memory token store
+- [x] update memory-bank/api-contracts.md
+- [x] update memory-bank/database-schema.md
 
 ## M2 — Menu, tables, QR (pending)
 

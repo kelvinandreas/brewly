@@ -2,6 +2,8 @@
 
 Source of truth: numbered SQL files in `backend/migrations/`. Update this file after every applied migration. Format per table: columns, indexes, constraints, notes.
 
+**Applied migrations:** `001_init.sql` (M1 — full schema, all 8 tables), `002_seed_owner.sql` (placeholder)
+
 ## `users`
 
 | Column | Type | Constraints | Description |
