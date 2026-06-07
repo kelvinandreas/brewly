@@ -18,7 +18,7 @@ Auth columns: `JWT` = staff access token bearer header; `Cookie` = httpOnly refr
 | POST | `/api/auth/register-owner` | — | `{email, password, name}` | `{user}` (only if no owner exists) |
 | POST | `/api/auth/login` | — | `{email, password}` | `{accessToken, user}` + sets refresh cookie |
 | POST | `/api/auth/refresh` | Cookie | — | `{accessToken}` + rotated refresh cookie |
-| POST | `/api/auth/logout` | Cookie | — | `{}` + clears refresh cookie |
+| POST | `/api/auth/logout` | JWT | — | `{}` + clears refresh cookie |
 | GET | `/api/auth/me` | JWT | — | `{user}` |
 
 ## Users (owner only)
