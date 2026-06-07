@@ -1,0 +1,3 @@
+-- 002_seed_owner.sql
+-- Owner registration is self-serve via POST /api/auth/register-owner.
+-- This file is a forward-only placeholder; no SQL needed.
