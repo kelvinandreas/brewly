@@ -1,0 +1,7 @@
+**/.git
+**/node_modules
+**/.env
+**/dist
+**/tmp
+**/testdata
+**/*_test.go

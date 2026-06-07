@@ -10,11 +10,11 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done
 - [x] All 6 ADRs
 - [x] .claude/commands, .claude/rules, .claude/skills
 - [x] PRPs/ templates + auth example
-- [ ] examples/ canonical files
-- [ ] backend/ go.mod, main.go boots and responds 200 to `/healthz`
-- [ ] frontend/ pnpm install, `vite dev` serves the React shell
-- [ ] docker-compose.yml `make dev` brings up pg + backend + frontend cleanly
-- [ ] Makefile targets all execute
+- [x] examples/ canonical files
+- [x] backend/ go.mod, main.go boots and responds 200 to `/healthz`
+- [x] frontend/ pnpm install, `vite dev` serves the React shell
+- [x] docker-compose.yml `make dev` brings up pg + backend + frontend cleanly
+- [x] Makefile targets all execute
 
 ## M1 — Auth
 
