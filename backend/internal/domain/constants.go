@@ -24,3 +24,26 @@ const (
 	ContextKeyTableID  contextKey = "tableID"
 	ContextKeyTokenJTI contextKey = "tokenJTI"
 )
+
+// Order status values.
+const (
+	StatusPending   = "pending"
+	StatusConfirmed = "confirmed"
+	StatusPreparing = "preparing"
+	StatusReady     = "ready"
+	StatusCompleted = "completed"
+	StatusCancelled = "cancelled"
+)
+
+// Order source values.
+const (
+	SourceCustomerQR = "customer_qr"
+	SourceCashierPOS = "cashier_pos"
+)
+
+// Payment method values.
+const (
+	PaymentMethodCash = "cash"
+	PaymentMethodQRIS = "qris"
+	PaymentMethodCard = "card"
+)

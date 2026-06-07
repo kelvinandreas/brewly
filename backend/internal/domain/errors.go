@@ -12,9 +12,14 @@ var (
 	ErrUnauthorized       = errors.New("unauthorized")
 	ErrForbidden          = errors.New("forbidden")
 
-	ErrCategoryNotFound  = errors.New("category not found")
-	ErrMenuItemNotFound  = errors.New("menu item not found")
-	ErrTableNotFound     = errors.New("table not found")
-	ErrTableLabelTaken   = errors.New("table label already in use")
+	ErrCategoryNotFound    = errors.New("category not found")
+	ErrMenuItemNotFound    = errors.New("menu item not found")
+	ErrTableNotFound       = errors.New("table not found")
+	ErrTableLabelTaken     = errors.New("table label already in use")
 	ErrMenuItemUnavailable = errors.New("menu item unavailable")
+
+	ErrOrderNotFound            = errors.New("order not found")
+	ErrOrderCancelled           = errors.New("order is already cancelled")
+	ErrInvalidStatusTransition  = errors.New("invalid order status transition")
+	ErrPaymentConflict          = errors.New("payment already recorded for this order")
 )
